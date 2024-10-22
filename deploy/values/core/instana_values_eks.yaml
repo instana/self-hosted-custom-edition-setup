@@ -1,0 +1,57 @@
+storageConfigs:
+  rawSpans:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: ""
+  eumSourceMaps:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: ""
+services: 
+- nameSuffix: lb-acceptor
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: http-service
+  selectorLabels:
+    app.kubernetes.io/component: acceptor
+    app.kubernetes.io/name: instana
+    instana.io/group: service
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ip-address-type: ipv4
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+- nameSuffix: lb-gateway
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: https
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selectorLabels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/name: instana
+    instana.io/group: service
+  type: LoadBalancer   
+  externalTrafficPolicy: Local
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ip-address-type: ipv4
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+

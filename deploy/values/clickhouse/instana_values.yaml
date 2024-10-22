@@ -1,0 +1,6 @@
+image: artifact-public.instana.io/clickhouse-openssl:23.8.10.43-1-lts-ibm
+ubiImage: registry.access.redhat.com/ubi9/ubi-minimal:latest
+clickhouse:
+  clusters:
+    layout:
+      replicasCount: 2

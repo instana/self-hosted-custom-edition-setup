@@ -1,0 +1,16 @@
+image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/kafka:0.41.0-kafka-3.6.2_v0.10.0"
+version: "3.6.2"
+replicas:
+  kafka: "3"
+  zookeeper: "3"
+storage:
+  size:
+    kafka: 50Gi
+    zookeeper: 5Gi
+  deleteClaim:
+    kafka: "false"
+    zookeeper: "false"
+template:
+  pod:
+    tmpDirSizeLimit:
+      entityOperator: "100Mi"

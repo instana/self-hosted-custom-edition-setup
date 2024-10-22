@@ -1,0 +1,35 @@
+imageRegistry: artifact-public.instana.io
+version: 1.3.12
+imagePullSecretName: "instana-registry"
+aggregator:
+  image:
+    name: beeinstana/aggregator
+    registry: artifact-public.instana.io
+    tag: v1.85.36-release
+  cpu: 4
+  memory: 16Gi
+  mirrors: 2
+  shards: 1
+  volumes:
+    live:
+      size: 2000Gi
+      storageClass: ""
+config:
+  image:
+    name: beeinstana/monconfig
+    registry: artifact-public.instana.io
+    tag: v2.19.0
+  cpu: 200m
+  memory: 200Mi
+  replicas: 1
+ingestor:
+  image:
+    name: beeinstana/ingestor
+    registry: artifact-public.instana.io
+    tag: v1.85.36-release
+  cpu: 8
+  memory: 4Gi
+  replicas: 1
+  workerPoolSize: 20
+  flushInterval: 10000
+  maxQueueSize: 5000

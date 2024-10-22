@@ -1,0 +1,6 @@
+image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/cnpg-containers:15_v0.9.0"
+instances: 3
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi

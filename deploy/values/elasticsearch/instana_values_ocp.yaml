@@ -1,0 +1,16 @@
+nodeSets:
+  - name: default
+    count: 3
+    containerName: "elasticsearch"
+    config:
+      node.roles:
+        - master
+        - ingest
+        - data
+      node.store.allow_mmap: false
+    securityContext: {}
+    storageClassName: ""
+    volume:
+      resources:
+        requests:
+          storage: "20Gi"

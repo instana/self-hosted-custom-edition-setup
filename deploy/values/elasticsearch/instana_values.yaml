@@ -1,0 +1,20 @@
+image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/elasticsearch:7.17.24_v0.11.0"
+version: "7.17.24"
+nodeSets:
+  - name: default
+    count: 3
+    containerName: "elasticsearch"
+    config:
+      node.roles:
+        - master
+        - ingest
+        - data
+      node.store.allow_mmap: false
+    securityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+    storageClassName: ""
+    volume:
+      resources:
+        requests:
+          storage: "20Gi"

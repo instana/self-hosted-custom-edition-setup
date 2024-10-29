@@ -12,7 +12,7 @@ install_datastore_kafka() {
     -f values/kafka-operator/instana_values.yaml
 
   local file_args
-  file_args=($(generate_helm_file_arguments kafka))
+  read -ra file_args <<<"$(generate_helm_file_arguments kafka)"
 
   helm_upgrade "kafka" "instana/kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
@@ -31,7 +31,7 @@ install_datastore_es() {
   check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "elastic-operator.instana-elastic.k8s.elastic.co"
 
   local file_args
-  file_args=($(generate_helm_file_arguments elasticsearch))
+  read -ra file_args <<<"$(generate_helm_file_arguments elasticsearch)"
 
   helm_upgrade "elasticsearch" "instana/elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
@@ -60,7 +60,7 @@ install_datastore_postgres() {
   check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "cnpg-validating-webhook-configuration"
 
   local file_args
-  file_args=($(generate_helm_file_arguments postgres))
+  read -ra file_args <<<"$(generate_helm_file_arguments postgres)"
 
   helm_upgrade "postgres" "instana/postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
@@ -88,7 +88,7 @@ install_datastore_cassandra() {
   check_webhook_and_service "instana-cassandra" "cass-operator-webhook-service" "cass-operator-validating-webhook-configuration"
 
   local file_args
-  file_args=($(generate_helm_file_arguments cassandra))
+  read -ra file_args <<<"$(generate_helm_file_arguments cassandra)"
 
   helm_upgrade "cassandra" "instana/cassandra" "instana-cassandra" "${CASSANDRA_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
@@ -108,7 +108,7 @@ install_datastore_clickhouse() {
     -f values/clickhouse-operator/instana_values.yaml
 
   local file_args
-  file_args=($(generate_helm_file_arguments clickhouse))
+  read -ra file_args <<<"$(generate_helm_file_arguments clickhouse)"
 
   helm_upgrade "clickhouse" "instana/clickhouse" "instana-clickhouse" "${CLICKHOUSE_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
@@ -136,7 +136,7 @@ install_datastore_beeinstana() {
   fi
 
   local file_args
-  file_args=($(generate_helm_file_arguments beeinstana))
+  read -ra file_args <<<"$(generate_helm_file_arguments beeinstana)"
 
   helm_upgrade "beeinstana" "instana/beeinstana" "instana-beeinstana" "${BEEINSTANA_INSTANCE_CHART_VERSION}" "${args[@]}" \
     "${file_args[@]}"

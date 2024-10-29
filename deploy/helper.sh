@@ -79,6 +79,7 @@ generate_helm_file_arguments() {
     file_args+=("--values=values/${component}/custom_values.yaml")
   fi
 
+  # Output as a space-separated string
   echo "${file_args[@]}"
 }
 

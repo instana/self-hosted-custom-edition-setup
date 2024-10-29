@@ -106,7 +106,7 @@ install_instana_core() {
   install_instana_registry instana-core
 
   local file_args
-  file_args=($(generate_helm_file_arguments core))
+  read -ra file_args <<<"$(generate_helm_file_arguments core)"
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
     --set baseDomain="$BASE_DOMAIN" \
@@ -141,7 +141,7 @@ install_instana_unit() {
   license_content=$(curl -H "Content-Type: text/plain" -s "https://instana.io/onprem/license/download?salesId=$SALES_KEY")
 
   local file_args
-  file_args=($(generate_helm_file_arguments unit))
+  read -ra file_args <<<"$(generate_helm_file_arguments unit)"
 
   helm_upgrade "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}" "instana/instana-unit" "instana-units" "${INSTANA_UNIT_CHART_VERSION}" \
     --set coreName=instana-core \
@@ -227,7 +227,8 @@ welcome_to_instana() {
 }
 
 main() {
-  local script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
+  local script_dir
+  script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
   pushd "$script_dir" >/dev/null 2>&1 || exit
 
   precheck

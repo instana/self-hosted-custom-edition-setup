@@ -104,6 +104,11 @@ INSTANA_TENANT_NAME=tenant0
 
 INSTANA_ADMIN_USER=admin@instana.local
 INSTANA_ADMIN_PASSWORD=mypass
+
+# The following environment variables are only required if the cluster type is aks (Azure Cloud)
+AZURE_STORAGE_ACCOUNT=<azure file storage account name>
+AZURE_STORAGE_ACCOUNT_KEY=<azure storage account key>
+AZURE_STORAGE_CAPACITY=<PersistentVolume size> # By default 100Gi
 ```
 
 ## Necessary Custom Values

@@ -105,6 +105,21 @@ install_instana_core() {
   kubectl label ns/instana-core app.kubernetes.io/name=instana-core
   install_instana_registry instana-core
 
+  if [ "$CLUSTER_TYPE" == "aks" ]; then
+  
+    # Create the secret for Azure storage account
+    kubectl create secret generic azure-storage-account \
+      --from-literal=azurestorageaccountname="${AZURE_STORAGE_ACCOUNT}" \
+      --from-literal=azurestorageaccountkey="${AZURE_STORAGE_ACCOUNT_KEY}" \
+      -n instana-core
+
+    # Check if capacity is provided, else default to 100Gi
+    CAPACITY="${AZURE_STORAGE_CAPACITY:-100Gi}"
+
+    # Apply the PersistentVolume definition
+    sed "s/{{AZURE_STORAGE_ACCOUNT}}/${AZURE_STORAGE_ACCOUNT}/g; s/{{AZURE_STORAGE_CAPACITY}}/${CAPACITY}/g" ./values/core/pv_template_aks.yaml | kubectl apply -f -
+  fi
+
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
 

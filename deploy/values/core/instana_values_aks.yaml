@@ -1,0 +1,49 @@
+storageConfigs:
+  rawSpans:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      volumeName: "azure-volume"
+      storageClassName: ""
+  eumSourceMaps:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: "" ## provide the sc which support read write many operation , eg: azurefile
+
+services:
+- nameSuffix: lb-acceptor
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: http-service
+  selectorLabels:
+    app.kubernetes.io/component: acceptor
+    app.kubernetes.io/name: instana
+    instana.io/group: service
+  type: LoadBalancer
+  loadBalancerIP: ""
+- nameSuffix: lb-gateway
+  ports:
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: https
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selectorLabels:
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/name: instana
+    instana.io/group: service
+  type: LoadBalancer
+  loadBalancerIP: ""
+  

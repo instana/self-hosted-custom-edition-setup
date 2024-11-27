@@ -1,7 +1,7 @@
 # Self Hosted Custom Edition Installation Script
 
 This script helps you install the Self Hosted Custom Edition on OCP (Red Hat OpenShift Container Platform), EKS (Amazon Elastic
-Kubernetes Service), AKS (Azure Kubernetes Service), and GKE (Google Kubernetes Engine) clusters.
+Kubernetes Service), AKS (Azure Kubernetes Service), GKE (Google Kubernetes Engine), ARO (Azure Redhat Openshift) and ROSA (Red Hat OpenShift Service on AWS) clusters.
 
 The tool is based on Helm charts and values and allows for custom installations tailored to your needs.
 
@@ -80,6 +80,7 @@ Before running the installation script, ensure the following configurations are 
 ### CLUSTER_TYPE Environment Variable
 
 Set the `CLUSTER_TYPE` environment variable based on your cluster type (`ocp`, `eks`, `aks`, `gke`):
+For ARO and ROSA set the `CLUSTER_TYPE` environment variable as `ocp`
 
 ```bash
 export CLUSTER_TYPE=ocp

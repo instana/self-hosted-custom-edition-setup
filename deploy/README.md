@@ -79,8 +79,9 @@ Before running the installation script, ensure the following configurations are 
 
 ### CLUSTER_TYPE Environment Variable
 
-Set the `CLUSTER_TYPE` environment variable based on your cluster type (`ocp`, `eks`, `aks`, `gke`):
-For ARO and ROSA set the `CLUSTER_TYPE` environment variable as `ocp`
+Set the `CLUSTER_TYPE` environment variable based on your cluster type (`ocp`, `eks`, `aks`, `gke`).
+For ARO and ROSA set the `CLUSTER_TYPE` environment variable as `ocp`.
+For more details on setting up ARO and ROSA infrastructure and setup follow [ARO&ROSA](/docs/ARO&ROSA.md)
 
 ```bash
 export CLUSTER_TYPE=ocp

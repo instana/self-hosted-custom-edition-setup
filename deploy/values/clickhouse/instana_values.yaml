@@ -1,5 +1,5 @@
-image: artifact-public.instana.io/clickhouse-openssl:23.8.10.43-1-lts-ibm
-ubiImage: registry.access.redhat.com/ubi9/ubi-minimal:latest
+image: "artifact-public.instana.io/clickhouse-openssl:24.3.12.75-1-lts-ibm"
+priorityClassName: "system-cluster-critical"
 clickhouse:
   clusters:
     layout:

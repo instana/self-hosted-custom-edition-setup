@@ -4,6 +4,7 @@ nodeSets:
   - name: default
     count: 3
     containerName: "elasticsearch"
+    priorityClassName: "system-cluster-critical"
     config:
       node.roles:
         - master
@@ -12,9 +13,10 @@ nodeSets:
       node.store.allow_mmap: false
     securityContext:
       fsGroup: 1000
+      runAsGroup: 1000
       runAsUser: 1000
     storageClassName: ""
     volume:
       resources:
         requests:
-          storage: "20Gi"
+          storage: 20Gi

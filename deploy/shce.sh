@@ -106,7 +106,7 @@ install_instana_core() {
   install_instana_registry instana-core
 
   if [ "$CLUSTER_TYPE" == "aks" ]; then
-  
+
     # Create the secret for Azure storage account
     kubectl create secret generic azure-storage-account \
       --from-literal=azurestorageaccountname="${AZURE_STORAGE_ACCOUNT}" \
@@ -128,18 +128,18 @@ install_instana_core() {
     --set agentAcceptor.host="$AGENT_ACCEPTOR" \
     --set salesKey="$SALES_KEY" \
     --set repositoryPassword="${DOWNLOAD_KEY}" \
-    --set datastores.beeInstana.password="$(get_secret_password beeinstana instana-beeinstana)" \
+    --set datastores.beeInstana.password="$(get_secret_password beeinstana-user instana-beeinstana)" \
     --set datastores.cassandra.adminPassword="$(get_secret_password cassandra-admin instana-cassandra)" \
-    --set datastores.cassandra.password="$(get_secret_password cassandra instana-cassandra)" \
+    --set datastores.cassandra.password="$(get_secret_password cassandra-user instana-cassandra)" \
     --set datastores.clickhouse.adminPassword="$(get_secret_password clickhouse-admin instana-clickhouse)" \
     --set datastores.clickhouse.password="$(get_secret_password clickhouse-admin instana-clickhouse)" \
     --set datastores.postgres.adminPassword="$(get_secret_password postgres-admin instana-postgres)" \
-    --set datastores.postgres.password="$(get_secret_password postgres instana-postgres)" \
+    --set datastores.postgres.password="$(get_secret_password postgres-user instana-postgres)" \
     --set datastores.elasticsearch.adminPassword="$(get_secret_password elasticsearch-admin instana-elastic)" \
-    --set datastores.elasticsearch.password="$(get_secret_password elasticsearch instana-elastic)" \
+    --set datastores.elasticsearch.password="$(get_secret_password elasticsearch-user instana-elastic)" \
     --set datastores.kafka.adminPassword="$(get_secret_password kafka-admin instana-kafka)" \
-    --set datastores.kafka.consumerPassword="$(get_secret_password kafka instana-kafka)" \
-    --set datastores.kafka.producerPassword="$(get_secret_password kafka instana-kafka)" \
+    --set datastores.kafka.consumerPassword="$(get_secret_password kafka-user instana-kafka)" \
+    --set datastores.kafka.producerPassword="$(get_secret_password kafka-user instana-kafka)" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-core" "core" "instana-core"

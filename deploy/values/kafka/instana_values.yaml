@@ -1,8 +1,9 @@
-image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/kafka:0.41.0-kafka-3.6.2_v0.10.0"
-version: "3.6.2"
+image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/kafka:0.42.0-kafka-3.7.1_v0.11.0"
+version: "3.7.1"
+priorityClassName: "system-cluster-critical"
 replicas:
-  kafka: "3"
-  zookeeper: "3"
+  kafka: 3
+  zookeeper: 3
 storage:
   size:
     kafka: 50Gi
@@ -13,4 +14,6 @@ storage:
 template:
   pod:
     tmpDirSizeLimit:
-      entityOperator: "100Mi"
+      kafka: 500Mi
+      zookeeper: 500Mi
+      entityOperator: 500Mi

@@ -1,68 +1,30 @@
 #!/usr/bin/env bash
 
-install_datastore_kafka() {
-  create_namespace_if_not_exist instana-kafka
-  install_instana_registry instana-kafka
+install_datastore_beeinstana() {
+  create_namespace_if_not_exist instana-beeinstana
+  install_instana_registry instana-beeinstana
 
-  helm_upgrade "strimzi-kafka-operator" "instana/strimzi-kafka-operator" "instana-kafka" "${KAFKA_OPERATOR_CHART_VERSION}" \
-    --set image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
-    --set topicOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
-    --set userOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
-    --set image.imagePullSecrets[0].name="instana-registry" \
-    -f values/kafka-operator/instana_values.yaml
-
-  local file_args
-  read -ra file_args <<<"$(generate_helm_file_arguments kafka)"
-
-  helm_upgrade "kafka" "instana/kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
-    "${file_args[@]}"
-}
-
-install_datastore_es() {
-  create_namespace_if_not_exist instana-elastic
-  install_instana_registry instana-elastic
-
-  helm_upgrade "elastic-operator" "instana/eck-operator" "instana-elastic" "${ES_OPERATOR_CHART_VERSION}" \
-    --set image.tag="${ES_OPERATOR_IMAGE_TAG}" \
+  helm_upgrade "beeinstana-operator" "instana/beeinstana-operator" "instana-beeinstana" "${BEEINSTANA_OPERATOR_CHART_VERSION}" \
+    --set image.tag="${BEEINSTANA_OPERATOR_IMAGE_TAG}" \
     --set imagePullSecrets[0].name="instana-registry" \
-    -f values/elasticsearch-operator/instana_values.yaml
+    -f values/beeinstana-operator/instana_values.yaml
 
-  # Ensure Webhook Service and configuration are ready, preventing potential installation failures
-  check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "elastic-operator.instana-elastic.k8s.elastic.co"
-
-  local file_args
-  read -ra file_args <<<"$(generate_helm_file_arguments elasticsearch)"
-
-  helm_upgrade "elasticsearch" "instana/elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
-    "${file_args[@]}"
-}
-
-install_datastore_postgres() {
-  create_namespace_if_not_exist instana-postgres
-  install_instana_registry instana-postgres
+  wait_for_k8s_object secret kafka-user instana-kafka
 
   local args=(
-    "--set=image.tag=${POSTGRES_OPERATOR_IMAGE_TAG}"
-    "--set=imagePullSecrets[0].name=instana-registry"
+    "--set=kafkaSettings.password=$(get_secret_password kafka-user instana-kafka)"
   )
 
   if [ "$CLUSTER_TYPE" == "ocp" ]; then
     args+=(
-      "--set=containerSecurityContext.runAsUser=$(kubectl get namespace instana-postgres -o jsonpath='{.metadata.annotations.openshift\.io/sa\.scc\.uid-range}' | cut -d/ -f 1)"
-      "--set=containerSecurityContext.runAsGroup=$(kubectl get namespace instana-postgres -o jsonpath='{.metadata.annotations.openshift\.io/sa\.scc\.uid-range}' | cut -d/ -f 1)"
+      "--set=fsGroup=$(kubectl get namespace instana-beeinstana -o jsonpath='{.metadata.annotations.openshift\.io/sa\.scc\.uid-range}' | cut -d/ -f 1)"
     )
   fi
 
-  helm_upgrade "cnpg" "instana/cloudnative-pg" "instana-postgres" "${POSTGRES_OPERATOR_CHART_VERSION}" \
-    "${args[@]}" -f values/postgres-operator/instana_values.yaml
-
-  # Ensure Webhook Service and configuration are ready, preventing potential installation failures
-  check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "cnpg-validating-webhook-configuration"
-
   local file_args
-  read -ra file_args <<<"$(generate_helm_file_arguments postgres)"
+  read -ra file_args <<<"$(generate_helm_file_arguments beeinstana)"
 
-  helm_upgrade "postgres" "instana/postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
+  helm_upgrade "beeinstana" "instana/beeinstana" "instana-beeinstana" "${BEEINSTANA_INSTANCE_CHART_VERSION}" "${args[@]}" \
     "${file_args[@]}"
 }
 
@@ -114,31 +76,69 @@ install_datastore_clickhouse() {
     "${file_args[@]}"
 }
 
-install_datastore_beeinstana() {
-  create_namespace_if_not_exist instana-beeinstana
-  install_instana_registry instana-beeinstana
+install_datastore_es() {
+  create_namespace_if_not_exist instana-elastic
+  install_instana_registry instana-elastic
 
-  helm_upgrade "beeinstana-operator" "instana/beeinstana-operator" "instana-beeinstana" "${BEEINSTANA_OPERATOR_CHART_VERSION}" \
-    --set image.tag="${BEEINSTANA_OPERATOR_IMAGE_TAG}" \
+  helm_upgrade "elastic-operator" "instana/eck-operator" "instana-elastic" "${ES_OPERATOR_CHART_VERSION}" \
+    --set image.tag="${ES_OPERATOR_IMAGE_TAG}" \
     --set imagePullSecrets[0].name="instana-registry" \
-    -f values/beeinstana-operator/instana_values.yaml
+    -f values/elasticsearch-operator/instana_values.yaml
 
-  wait_for_k8s_object secret kafka instana-kafka
+  # Ensure Webhook Service and configuration are ready, preventing potential installation failures
+  check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "elastic-operator.instana-elastic.k8s.elastic.co"
+
+  local file_args
+  read -ra file_args <<<"$(generate_helm_file_arguments elasticsearch)"
+
+  helm_upgrade "elasticsearch" "instana/elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
+    "${file_args[@]}"
+}
+
+install_datastore_kafka() {
+  create_namespace_if_not_exist instana-kafka
+  install_instana_registry instana-kafka
+
+  helm_upgrade "strimzi-kafka-operator" "instana/strimzi-kafka-operator" "instana-kafka" "${KAFKA_OPERATOR_CHART_VERSION}" \
+    --set image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
+    --set topicOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
+    --set userOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
+    --set image.imagePullSecrets[0].name="instana-registry" \
+    -f values/kafka-operator/instana_values.yaml
+
+  local file_args
+  read -ra file_args <<<"$(generate_helm_file_arguments kafka)"
+
+  helm_upgrade "kafka" "instana/kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
+    "${file_args[@]}"
+}
+
+install_datastore_postgres() {
+  create_namespace_if_not_exist instana-postgres
+  install_instana_registry instana-postgres
 
   local args=(
-    "--set=kafkaSettings.password=$(get_secret_password kafka instana-kafka)"
+    "--set=image.tag=${POSTGRES_OPERATOR_IMAGE_TAG}"
+    "--set=imagePullSecrets[0].name=instana-registry"
   )
 
   if [ "$CLUSTER_TYPE" == "ocp" ]; then
     args+=(
-      "--set=fsGroup=$(kubectl get namespace instana-beeinstana -o jsonpath='{.metadata.annotations.openshift\.io/sa\.scc\.uid-range}' | cut -d/ -f 1)"
+      "--set=containerSecurityContext.runAsUser=$(kubectl get namespace instana-postgres -o jsonpath='{.metadata.annotations.openshift\.io/sa\.scc\.uid-range}' | cut -d/ -f 1)"
+      "--set=containerSecurityContext.runAsGroup=$(kubectl get namespace instana-postgres -o jsonpath='{.metadata.annotations.openshift\.io/sa\.scc\.uid-range}' | cut -d/ -f 1)"
     )
   fi
 
-  local file_args
-  read -ra file_args <<<"$(generate_helm_file_arguments beeinstana)"
+  helm_upgrade "cnpg" "instana/cloudnative-pg" "instana-postgres" "${POSTGRES_OPERATOR_CHART_VERSION}" \
+    "${args[@]}" -f values/postgres-operator/instana_values.yaml
 
-  helm_upgrade "beeinstana" "instana/beeinstana" "instana-beeinstana" "${BEEINSTANA_INSTANCE_CHART_VERSION}" "${args[@]}" \
+  # Ensure Webhook Service and configuration are ready, preventing potential installation failures
+  check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "cnpg-validating-webhook-configuration"
+
+  local file_args
+  read -ra file_args <<<"$(generate_helm_file_arguments postgres)"
+
+  helm_upgrade "postgres" "instana/postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
 }
 

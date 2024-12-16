@@ -1,7 +1,7 @@
 baseDomain: ""
 agentAcceptor:
   host: ""
-  port: 8443
+  port: 443
 subdomains:
   agentAcceptor: agent-acceptor
   otlpHttp: otlp-grpc
@@ -24,7 +24,7 @@ emailConfig:
     useSSL: true
     user: ""
     password: ""
-imageConfig: 
+imageConfig:
   registry: artifact-public.instana.io
 imagePullSecrets:
   - name: instana-registry
@@ -36,7 +36,7 @@ storageConfigs:
   syntheticsKeystore: {}
 resourceProfile: small
 properties: []
-featureFlags: 
+featureFlags:
   - name: feature.beeinstana.infra.metrics.enabled
     enabled: true
 serviceAccountAnnotations: {}
@@ -101,11 +101,11 @@ tokenSecret: ""
 cert:
   crt: ""
   key: ""
-services: 
+services:
 - nameSuffix: lb-acceptor
   ports:
   - name: https
-    port: 8443
+    port: 443
     protocol: TCP
     targetPort: http-service
   selectorLabels:
@@ -128,5 +128,5 @@ services:
     app.kubernetes.io/component: gateway
     app.kubernetes.io/name: instana
     instana.io/group: service
-  type: LoadBalancer   
+  type: LoadBalancer
   externalTrafficPolicy: Local

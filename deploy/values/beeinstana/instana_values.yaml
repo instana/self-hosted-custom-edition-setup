@@ -1,11 +1,11 @@
-imageRegistry: artifact-public.instana.io
-version: 1.3.12
+version: "1.3.14"
 imagePullSecretName: "instana-registry"
+priorityClassName: "system-cluster-critical"
 aggregator:
   image:
     name: beeinstana/aggregator
     registry: artifact-public.instana.io
-    tag: v1.85.36-release
+    tag: v1.85.39-release
   cpu: 4
   memory: 16Gi
   mirrors: 2
@@ -26,7 +26,7 @@ ingestor:
   image:
     name: beeinstana/ingestor
     registry: artifact-public.instana.io
-    tag: v1.85.36-release
+    tag: v1.85.39-release
   cpu: 8
   memory: 4Gi
   replicas: 1

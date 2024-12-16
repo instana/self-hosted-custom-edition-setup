@@ -141,6 +141,7 @@ Example:
 ```yaml
 emailConfig:
   smtpConfig:
+    from: "your-email-address"
     host: "your-smtp-host"
 ```
 

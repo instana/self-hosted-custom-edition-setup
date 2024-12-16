@@ -17,11 +17,11 @@ storageConfigs:
       storageClassName: ""
 serviceAccountAnnotations:
   eks.amazonaws.com/role-arn: ""
-services: 
+services:
 - nameSuffix: lb-acceptor
   ports:
   - name: https
-    port: 8443
+    port: 443
     protocol: TCP
     targetPort: http-service
   selectorLabels:
@@ -49,7 +49,7 @@ services:
     app.kubernetes.io/component: gateway
     app.kubernetes.io/name: instana
     instana.io/group: service
-  type: LoadBalancer   
+  type: LoadBalancer
   externalTrafficPolicy: Local
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-ip-address-type: ipv4

@@ -128,7 +128,7 @@ install_instana_core() {
     --set agentAcceptor.host="$AGENT_ACCEPTOR" \
     --set salesKey="$SALES_KEY" \
     --set repositoryPassword="${DOWNLOAD_KEY}" \
-    --set datastores.beeInstana.password="$(get_secret_password beeinstana-user instana-beeinstana)" \
+    --set datastores.beeInstana.password="$(get_secret_password beeinstana-admin instana-beeinstana)" \
     --set datastores.cassandra.adminPassword="$(get_secret_password cassandra-admin instana-cassandra)" \
     --set datastores.cassandra.password="$(get_secret_password cassandra-user instana-cassandra)" \
     --set datastores.clickhouse.adminPassword="$(get_secret_password clickhouse-admin instana-clickhouse)" \

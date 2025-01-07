@@ -51,6 +51,7 @@ install_cert_manager() {
 
   helm_upgrade "cert-manager" "instana/cert-manager" "cert-manager" "${CERT_MANAGER_VERSION}" \
     --set crds.enabled=true \
+    --set crds.keep=true \
     --set global.imagePullSecrets[0].name="instana-registry"
 }
 
@@ -124,7 +125,9 @@ install_instana_core() {
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
-    --set baseDomain="$BASE_DOMAIN" \
+    --set domains.base="$BASE_DOMAIN" \
+    --set domains.otlpHttp="otlp-http.$BASE_DOMAIN" \
+    --set domains.otlpGrpc="otlp-grpc.$BASE_DOMAIN" \
     --set agentAcceptor.host="$AGENT_ACCEPTOR" \
     --set salesKey="$SALES_KEY" \
     --set repositoryPassword="${DOWNLOAD_KEY}" \

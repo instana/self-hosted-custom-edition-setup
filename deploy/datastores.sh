@@ -24,7 +24,7 @@ install_datastore_beeinstana() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments beeinstana)"
 
-  helm_upgrade "beeinstana" "instana/beeinstana" "instana-beeinstana" "${BEEINSTANA_INSTANCE_CHART_VERSION}" "${args[@]}" \
+  helm_upgrade "beeinstana" "instana/instana-beeinstana" "instana-beeinstana" "${BEEINSTANA_INSTANCE_CHART_VERSION}" "${args[@]}" \
     "${file_args[@]}"
 }
 
@@ -52,7 +52,7 @@ install_datastore_cassandra() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments cassandra)"
 
-  helm_upgrade "cassandra" "instana/cassandra" "instana-cassandra" "${CASSANDRA_INSTANCE_CHART_VERSION}" \
+  helm_upgrade "cassandra" "instana/instana-cassandra" "instana-cassandra" "${CASSANDRA_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -72,7 +72,7 @@ install_datastore_clickhouse() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments clickhouse)"
 
-  helm_upgrade "clickhouse" "instana/clickhouse" "instana-clickhouse" "${CLICKHOUSE_INSTANCE_CHART_VERSION}" \
+  helm_upgrade "clickhouse" "instana/instana-clickhouse" "instana-clickhouse" "${CLICKHOUSE_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -91,7 +91,7 @@ install_datastore_es() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments elasticsearch)"
 
-  helm_upgrade "elasticsearch" "instana/elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
+  helm_upgrade "elasticsearch" "instana/instana-elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -109,7 +109,7 @@ install_datastore_kafka() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments kafka)"
 
-  helm_upgrade "kafka" "instana/kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
+  helm_upgrade "kafka" "instana/instana-kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -138,7 +138,7 @@ install_datastore_postgres() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments postgres)"
 
-  helm_upgrade "postgres" "instana/postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
+  helm_upgrade "postgres" "instana/instana-postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
     "${file_args[@]}"
 }
 

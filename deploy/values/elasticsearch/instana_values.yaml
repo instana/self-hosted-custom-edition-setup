@@ -1,3 +1,5 @@
+nameOverride: elasticsearch
+fullnameOverride: elasticsearch
 image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/elasticsearch:7.17.24_v0.11.0"
 version: "7.17.24"
 nodeSets:

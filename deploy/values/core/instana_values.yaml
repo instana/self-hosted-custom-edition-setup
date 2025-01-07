@@ -1,11 +1,10 @@
-baseDomain: ""
+domains:
+  base: ""
+  otlpHttp: ""
+  otlpGrpc: ""
 agentAcceptor:
   host: ""
   port: 443
-subdomains:
-  agentAcceptor: agent-acceptor
-  otlpHttp: otlp-grpc
-  otlpGrpc: otlp-http
 tenantUnits:
   - unitName: unit0
     tenantName: tenant0

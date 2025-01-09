@@ -212,8 +212,6 @@ uninstall_instana_unit() {
     helm_uninstall "$unit" "instana-units"
   done
 
-  delete_instana_routes
-
   # The registry is used when uninstalling by pods.
   helm_uninstall "instana-registry" "instana-units"
 
@@ -260,6 +258,7 @@ main() {
     install_instana_operator
     install_instana_core
     install_instana_unit
+    delete_instana_routes
     create_instana_routes
     welcome_to_instana
     ;;
@@ -269,6 +268,7 @@ main() {
     uninstall_instana_operator
     uninstall_datastores
     uninstall_cert_manager
+    delete_instana_routes
     helm_repo_remove
     ;;
   "datastores")

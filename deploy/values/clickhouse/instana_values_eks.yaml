@@ -1,0 +1,4 @@
+keeper:
+  settings:
+    keeper_server/snapshot_storage_path: /var/lib/clickhouse-keeper/coordination/snapshots/store
+    keeper_server/log_storage_path: /var/lib/clickhouse-keeper/coordination/logs/store

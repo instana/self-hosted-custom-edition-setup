@@ -130,13 +130,11 @@ aggregator:
 
 ### Core
 
-In `values/core/custom_values.yaml`, update the SMTP host and storage configurations:
+In `values/core/custom_values.yaml`, update the SMTP host and storage configurations as per the deployment environment:
 
 - `emailConfig.smtpConfig.host`
-- `storageConfigs.rawSpans.pvcConfig.storageClassName`
-- `storageConfigs.eumSourceMaps.pvcConfig.storageClassName`
 
-Example:
+_Example of_ `emailConfig`:
 
 ```yaml
 emailConfig:
@@ -144,6 +142,11 @@ emailConfig:
     from: "your-email-address"
     host: "your-smtp-host"
 ```
+
+_Example of_ `storageConfigs` with `pvcConfig`:
+
+- `storageConfigs.rawSpans.pvcConfig.storageClassName`
+- `storageConfigs.eumSourceMaps.pvcConfig.storageClassName`
 
 ```yaml
 storageConfigs:
@@ -153,6 +156,35 @@ storageConfigs:
   eumSourceMaps:
     pvcConfig:
       storageClassName: "your-storage-class"
+```
+
+_Example of_ `storageConfigs` with `s3Config`:
+
+- `storageConfigs.rawSpans.s3Config`
+- `storageConfigs.eumSourceMaps.s3Config`
+
+```yaml
+storageConfigs:
+  rawSpans:
+    s3Config:
+      endpoint: ""
+      region: ""
+      bucket: ""
+      prefix: ""
+      storageClass: ""
+      bucketLongTerm: ""
+      prefixLongTerm: ""
+      storageClassLongTerm: ""
+  eumSourceMaps:
+    s3Config:
+      endpoint: ""
+      region: ""
+      bucket: ""
+      prefix: ""
+      storageClass: ""
+      bucketLongTerm: ""
+      prefixLongTerm: ""
+      storageClassLongTerm: "" 
 ```
 
 ## Installation

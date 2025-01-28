@@ -107,7 +107,17 @@ INSTANA_TENANT_NAME=tenant0
 INSTANA_ADMIN_USER=admin@instana.local
 INSTANA_ADMIN_PASSWORD=mypass
 
-# The following environment variables are only required if the cluster type is aks (Azure Cloud)
+# Registry configuration environment variables are needed only if a custom registry is used.
+REGISTRY_URL=<registry url>
+REGISTRY_USERNAME=<registry username>
+REGISTRY_PASSWORD=<registry password>
+
+# Helm repository configuration environment variables are needed only if a custom repository is used.
+HELM_REPO_URL=<helm repository url>
+HELM_REPO_USERNAME=<helm repository username>
+HELM_REPO_PASSWORD=<helm repository password>
+
+# The following environment variables are only required if the cluster type is aks (Azure Cloud).
 AZURE_STORAGE_ACCOUNT=<azure file storage account name>
 AZURE_STORAGE_ACCOUNT_KEY=<azure storage account key>
 AZURE_STORAGE_CAPACITY=<PersistentVolume size> # By default 100Gi
@@ -132,16 +142,8 @@ aggregator:
 
 In `values/core/custom_values.yaml`, update the SMTP host and storage configurations as per the deployment environment:
 
-- `emailConfig.smtpConfig.host`
-
-_Example of_ `emailConfig`:
-
-```yaml
-emailConfig:
-  smtpConfig:
-    from: "your-email-address"
-    host: "your-smtp-host"
-```
+- `storageConfigs.rawSpans.pvcConfig.storageClassName`
+- `storageConfigs.eumSourceMaps.pvcConfig.storageClassName`
 
 _Example of_ `storageConfigs` with `pvcConfig`:
 
@@ -184,7 +186,7 @@ storageConfigs:
       storageClass: ""
       bucketLongTerm: ""
       prefixLongTerm: ""
-      storageClassLongTerm: "" 
+      storageClassLongTerm: ""
 ```
 
 ## Installation
@@ -212,6 +214,14 @@ To install individual data stores, such as Kafka or Postgres:
 ```bash
 ./shce.sh datastores apply kafka
 ./shce.sh datastores apply postgres
+```
+
+### Instana backend configurations
+
+At any time during or after the Instana backend installation, you can update the Instana Core configuration values in `values/core/custom_values.yaml` and `values/unit/custom_values.yaml`. Run the following command to apply the backend configurations:
+
+```bash
+./shce.sh backend apply
 ```
 
 ## Setting up load balancers and DNS

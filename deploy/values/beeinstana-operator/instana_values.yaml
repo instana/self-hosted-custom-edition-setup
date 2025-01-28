@@ -2,6 +2,3 @@ operator:
   securityContext:
     seccompProfile:
       type: "RuntimeDefault"
-image:
-  registry: "artifact-public.instana.io"
-  repository: "beeinstana/operator"

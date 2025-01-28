@@ -50,6 +50,16 @@ install_cert_manager() {
   install_instana_registry cert-manager
 
   helm_upgrade "cert-manager" "instana/cert-manager" "cert-manager" "${CERT_MANAGER_VERSION}" \
+    --set image.registry="${REGISTRY_URL}" \
+    --set image.repository="jetstack/cert-manager-controller" \
+    --set webhook.image.registry="${REGISTRY_URL}" \
+    --set webhook.image.repository="jetstack/cert-manager-webhook" \
+    --set cainjector.image.registry="${REGISTRY_URL}" \
+    --set cainjector.image.repository="jetstack/cert-manager-cainjector" \
+    --set acmesolver.image.registry="${REGISTRY_URL}" \
+    --set acmesolver.image.repository="jetstack/cert-manager-acmesolver" \
+    --set startupapicheck.image.registry="${REGISTRY_URL}" \
+    --set startupapicheck.image.repository="jetstack/cert-manager-startupapicheck" \
     --set crds.enabled=true \
     --set crds.keep=true \
     --set global.imagePullSecrets[0].name="instana-registry"
@@ -65,7 +75,9 @@ uninstall_cert_manager() {
 install_instana_registry() {
   local ns=$1
   helm_upgrade "instana-registry" "instana/instana-registry" "$ns" "${INSTANA_REGISTRY_CHART_VERSION}" \
-    --set password="$DOWNLOAD_KEY"
+    --set url="${REGISTRY_URL}" \
+    --set username="${REGISTRY_USERNAME}" \
+    --set password="${REGISTRY_PASSWORD}"
 }
 
 install_instana_operator() {
@@ -75,7 +87,8 @@ install_instana_operator() {
   install_instana_registry instana-operator
 
   helm_upgrade "instana-enterprise-operator" "instana/instana-enterprise-operator" "instana-operator" "${INSTANA_OPERATOR_CHART_VERSION}" \
-    --set image.tag="$INSTANA_OPERATOR_IMAGE_TAG" \
+    --set image.registry="${REGISTRY_URL}" \
+    --set image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
     --set imagePullSecrets[0].name=instana-registry
 
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
@@ -125,11 +138,12 @@ install_instana_core() {
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
-    --set domains.base="$BASE_DOMAIN" \
-    --set domains.otlpHttp="otlp-http.$BASE_DOMAIN" \
-    --set domains.otlpGrpc="otlp-grpc.$BASE_DOMAIN" \
-    --set agentAcceptor.host="$AGENT_ACCEPTOR" \
-    --set salesKey="$SALES_KEY" \
+    --set domains.base="${BASE_DOMAIN}" \
+    --set domains.otlpHttp="otlp-http.${BASE_DOMAIN}" \
+    --set domains.otlpGrpc="otlp-grpc.${BASE_DOMAIN}" \
+    --set agentAcceptor.host="${AGENT_ACCEPTOR}" \
+    --set salesKey="${SALES_KEY}" \
+    --set imageConfig.registry="${REGISTRY_URL}" \
     --set repositoryPassword="${DOWNLOAD_KEY}" \
     --set datastores.beeInstana.password="$(get_secret_password beeinstana-admin instana-beeinstana)" \
     --set datastores.cassandra.adminPassword="$(get_secret_password cassandra-admin instana-cassandra)" \
@@ -222,7 +236,7 @@ uninstall_instana_operator() {
   helm_uninstall "instana-enterprise-operator" "instana-operator"
 
   info "Waiting for Instana operator pods to be terminated..."
-  kubectl -n instana-operator wait --for=delete pod -lapp.kubernetes.io/name=instana --timeout="$HELM_UNINSTALL_TIMEOUT"
+  kubectl -n instana-operator wait --for=delete pod -lapp.kubernetes.io/name=instana --timeout="${HELM_UNINSTALL_TIMEOUT}"
 
   helm_uninstall "instana-registry" "instana-operator"
 
@@ -235,8 +249,8 @@ welcome_to_instana() {
 * Successfully installed Instana Self-Hosted Custom Edition on ${CLUSTER_TYPE}!
 *
 *  URL: https://${BASE_DOMAIN}
-*   Username : $INSTANA_ADMIN_USER
-*   Password : $INSTANA_ADMIN_PASSWORD
+*   Username : ${INSTANA_ADMIN_USER}
+*   Password : ${INSTANA_ADMIN_PASSWORD}
 *
 *******************************************************************************
 "
@@ -281,6 +295,20 @@ main() {
       ;;
     "delete")
       uninstall_datastores "$datastore"
+      ;;
+    esac
+    ;;
+  "backend")
+    local sub_action=$2
+    case $sub_action in
+    "apply")
+      helm_repo_add
+      install_instana_operator
+      install_instana_core
+      install_instana_unit
+      delete_instana_routes
+      create_instana_routes
+      welcome_to_instana
       ;;
     esac
     ;;

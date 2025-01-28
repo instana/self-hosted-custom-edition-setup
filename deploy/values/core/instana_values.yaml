@@ -23,8 +23,6 @@ emailConfig:
     useSSL: true
     user: ""
     password: ""
-imageConfig:
-  registry: artifact-public.instana.io
 imagePullSecrets:
   - name: instana-registry
 imagePullPolicy: IfNotPresent

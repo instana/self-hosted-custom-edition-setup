@@ -1,13 +1,8 @@
 nameOverride: beeinstana
 fullnameOverride: beeinstana
-version: "1.3.14"
 imagePullSecretName: "instana-registry"
 priorityClassName: "system-cluster-critical"
 aggregator:
-  image:
-    name: beeinstana/aggregator
-    registry: artifact-public.instana.io
-    tag: v1.85.39-release
   cpu: 4
   memory: 16Gi
   mirrors: 2
@@ -17,18 +12,10 @@ aggregator:
       size: 2000Gi
       storageClass: ""
 config:
-  image:
-    name: beeinstana/monconfig
-    registry: artifact-public.instana.io
-    tag: v2.19.0
   cpu: 200m
   memory: 200Mi
   replicas: 1
 ingestor:
-  image:
-    name: beeinstana/ingestor
-    registry: artifact-public.instana.io
-    tag: v1.85.39-release
   cpu: 8
   memory: 4Gi
   replicas: 1

@@ -1,4 +1,0 @@
-operator:
-  image:
-    repository: "artifact-public.instana.io/clickhouse-operator"
-

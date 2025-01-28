@@ -1,3 +1,0 @@
-image:
-  registry: "artifact-public.instana.io"
-  repository: "self-hosted-images/3rd-party/operator/cass-operator"

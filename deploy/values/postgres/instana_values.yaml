@@ -1,6 +1,5 @@
 nameOverride: postgres
 fullnameOverride: postgres
-image: "artifact-public.instana.io/self-hosted-images/3rd-party/datastore/cnpg-containers:15_v0.9.0"
 priorityClassName: "system-cluster-critical"
 instances: 3
 resources:

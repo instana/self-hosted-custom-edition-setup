@@ -1,6 +1,5 @@
 nameOverride: clickhouse
 fullnameOverride: clickhouse
-image: "artifact-public.instana.io/clickhouse-openssl:24.3.12.75-1-lts-ibm"
 priorityClassName: "system-cluster-critical"
 clickhouse:
   clusters:

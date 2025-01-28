@@ -3,9 +3,12 @@
 : "${HELM_INSTALL_TIMEOUT:=1200s}"
 : "${HELM_UNINSTALL_TIMEOUT:=300s}"
 : "${K8S_READINESS_TIMEOUT:=900s}"
-: "${INSTANA_HELM_REPO_URL:=https://artifact-public.instana.io/artifactory/rel-helm-customer-virtual}"
-: "${INSTANA_REPO_USERNAME:=_}"
-: "${INSTANA_REPO_PASSWORD:=$DOWNLOAD_KEY}"
+: "${REGISTRY_URL:=artifact-public.instana.io}"
+: "${REGISTRY_USERNAME:=_}"
+: "${REGISTRY_PASSWORD:=$DOWNLOAD_KEY}"
+: "${HELM_REPO_URL:=https://artifact-public.instana.io/artifactory/rel-helm-customer-virtual}"
+: "${HELM_REPO_USERNAME:=_}"
+: "${HELM_REPO_PASSWORD:=$DOWNLOAD_KEY}"
 : "${DELETE_NAMESPACE_WHEN_UNINSTALL:=false}"
 
 info() {
@@ -23,7 +26,7 @@ error() {
 
 helm_repo_add() {
   info "Adding helm repo..."
-  helm repo add instana "$INSTANA_HELM_REPO_URL" --username "$INSTANA_REPO_USERNAME" --password "$INSTANA_REPO_PASSWORD" >/dev/null
+  helm repo add instana "$HELM_REPO_URL" --username "$HELM_REPO_USERNAME" --password "$HELM_REPO_PASSWORD" --force-update >/dev/null
   helm repo update >/dev/null
 }
 

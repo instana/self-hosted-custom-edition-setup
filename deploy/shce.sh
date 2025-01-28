@@ -50,19 +50,19 @@ install_cert_manager() {
   install_instana_registry cert-manager
 
   helm_upgrade "cert-manager" "instana/cert-manager" "cert-manager" "${CERT_MANAGER_VERSION}" \
-    --set image.registry="${REGISTRY_URL}" \
-    --set image.repository="jetstack/cert-manager-controller" \
-    --set webhook.image.registry="${REGISTRY_URL}" \
-    --set webhook.image.repository="jetstack/cert-manager-webhook" \
-    --set cainjector.image.registry="${REGISTRY_URL}" \
-    --set cainjector.image.repository="jetstack/cert-manager-cainjector" \
-    --set acmesolver.image.registry="${REGISTRY_URL}" \
-    --set acmesolver.image.repository="jetstack/cert-manager-acmesolver" \
-    --set startupapicheck.image.registry="${REGISTRY_URL}" \
-    --set startupapicheck.image.repository="jetstack/cert-manager-startupapicheck" \
+    --set-string image.registry="${REGISTRY_URL}" \
+    --set-string image.repository="jetstack/cert-manager-controller" \
+    --set-string webhook.image.registry="${REGISTRY_URL}" \
+    --set-string webhook.image.repository="jetstack/cert-manager-webhook" \
+    --set-string cainjector.image.registry="${REGISTRY_URL}" \
+    --set-string cainjector.image.repository="jetstack/cert-manager-cainjector" \
+    --set-string acmesolver.image.registry="${REGISTRY_URL}" \
+    --set-string acmesolver.image.repository="jetstack/cert-manager-acmesolver" \
+    --set-string startupapicheck.image.registry="${REGISTRY_URL}" \
+    --set-string startupapicheck.image.repository="jetstack/cert-manager-startupapicheck" \
     --set crds.enabled=true \
     --set crds.keep=true \
-    --set global.imagePullSecrets[0].name="instana-registry"
+    --set-string global.imagePullSecrets[0].name="instana-registry"
 }
 
 uninstall_cert_manager() {
@@ -75,9 +75,9 @@ uninstall_cert_manager() {
 install_instana_registry() {
   local ns=$1
   helm_upgrade "instana-registry" "instana/instana-registry" "$ns" "${INSTANA_REGISTRY_CHART_VERSION}" \
-    --set url="${REGISTRY_URL}" \
-    --set username="${REGISTRY_USERNAME}" \
-    --set password="${REGISTRY_PASSWORD}"
+    --set-string url="${REGISTRY_URL}" \
+    --set-literal username="${REGISTRY_USERNAME}" \
+    --set-literal password="${REGISTRY_PASSWORD}"
 }
 
 install_instana_operator() {
@@ -87,9 +87,9 @@ install_instana_operator() {
   install_instana_registry instana-operator
 
   helm_upgrade "instana-enterprise-operator" "instana/instana-enterprise-operator" "instana-operator" "${INSTANA_OPERATOR_CHART_VERSION}" \
-    --set image.registry="${REGISTRY_URL}" \
-    --set image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
-    --set imagePullSecrets[0].name=instana-registry
+    --set-string image.registry="${REGISTRY_URL}" \
+    --set-string image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
+    --set-string imagePullSecrets[0].name=instana-registry
 
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
 }
@@ -138,25 +138,25 @@ install_instana_core() {
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
-    --set domains.base="${BASE_DOMAIN}" \
-    --set domains.otlpHttp="otlp-http.${BASE_DOMAIN}" \
-    --set domains.otlpGrpc="otlp-grpc.${BASE_DOMAIN}" \
-    --set agentAcceptor.host="${AGENT_ACCEPTOR}" \
-    --set salesKey="${SALES_KEY}" \
-    --set imageConfig.registry="${REGISTRY_URL}" \
-    --set repositoryPassword="${DOWNLOAD_KEY}" \
-    --set datastores.beeInstana.password="$(get_secret_password beeinstana-admin instana-beeinstana)" \
-    --set datastores.cassandra.adminPassword="$(get_secret_password cassandra-admin instana-cassandra)" \
-    --set datastores.cassandra.password="$(get_secret_password cassandra-user instana-cassandra)" \
-    --set datastores.clickhouse.adminPassword="$(get_secret_password clickhouse-admin instana-clickhouse)" \
-    --set datastores.clickhouse.password="$(get_secret_password clickhouse-admin instana-clickhouse)" \
-    --set datastores.postgres.adminPassword="$(get_secret_password postgres-admin instana-postgres)" \
-    --set datastores.postgres.password="$(get_secret_password postgres-user instana-postgres)" \
-    --set datastores.elasticsearch.adminPassword="$(get_secret_password elasticsearch-admin instana-elastic)" \
-    --set datastores.elasticsearch.password="$(get_secret_password elasticsearch-user instana-elastic)" \
-    --set datastores.kafka.adminPassword="$(get_secret_password kafka-admin instana-kafka)" \
-    --set datastores.kafka.consumerPassword="$(get_secret_password kafka-user instana-kafka)" \
-    --set datastores.kafka.producerPassword="$(get_secret_password kafka-user instana-kafka)" \
+    --set-string domains.base="${BASE_DOMAIN}" \
+    --set-string domains.otlpHttp="otlp-http.${BASE_DOMAIN}" \
+    --set-string domains.otlpGrpc="otlp-grpc.${BASE_DOMAIN}" \
+    --set-string agentAcceptor.host="${AGENT_ACCEPTOR}" \
+    --set-string imageConfig.registry="${REGISTRY_URL}" \
+    --set-literal salesKey="${SALES_KEY}" \
+    --set-literal repositoryPassword="${DOWNLOAD_KEY}" \
+    --set-literal datastores.beeInstana.password="$(get_secret_password beeinstana-admin instana-beeinstana)" \
+    --set-literal datastores.cassandra.adminPassword="$(get_secret_password cassandra-admin instana-cassandra)" \
+    --set-literal datastores.cassandra.password="$(get_secret_password cassandra-user instana-cassandra)" \
+    --set-literal datastores.clickhouse.adminPassword="$(get_secret_password clickhouse-admin instana-clickhouse)" \
+    --set-literal datastores.clickhouse.password="$(get_secret_password clickhouse-admin instana-clickhouse)" \
+    --set-literal datastores.postgres.adminPassword="$(get_secret_password postgres-admin instana-postgres)" \
+    --set-literal datastores.postgres.password="$(get_secret_password postgres-user instana-postgres)" \
+    --set-literal datastores.elasticsearch.adminPassword="$(get_secret_password elasticsearch-admin instana-elastic)" \
+    --set-literal datastores.elasticsearch.password="$(get_secret_password elasticsearch-user instana-elastic)" \
+    --set-literal datastores.kafka.adminPassword="$(get_secret_password kafka-admin instana-kafka)" \
+    --set-literal datastores.kafka.consumerPassword="$(get_secret_password kafka-user instana-kafka)" \
+    --set-literal datastores.kafka.producerPassword="$(get_secret_password kafka-user instana-kafka)" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-core" "core" "instana-core"
@@ -176,14 +176,14 @@ install_instana_unit() {
   read -ra file_args <<<"$(generate_helm_file_arguments unit)"
 
   helm_upgrade "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}" "instana/instana-unit" "instana-units" "${INSTANA_UNIT_CHART_VERSION}" \
-    --set coreName=instana-core \
-    --set coreNamespace=instana-core \
-    --set resourceProfile=small \
+    --set-string coreName=instana-core \
+    --set-string coreNamespace=instana-core \
+    --set-string resourceProfile=small \
     --set licenses="{$license_content}" \
-    --set downloadKey="$DOWNLOAD_KEY" \
     --set agentKeys="{$SALES_KEY}" \
-    --set initialAdminUser="$INSTANA_ADMIN_USER" \
-    --set initialAdminPassword="$INSTANA_ADMIN_PASSWORD" \
+    --set-literal downloadKey="$DOWNLOAD_KEY" \
+    --set-literal initialAdminUser="$INSTANA_ADMIN_USER" \
+    --set-literal initialAdminPassword="$INSTANA_ADMIN_PASSWORD" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-units" "unit" "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}"

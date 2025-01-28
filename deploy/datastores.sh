@@ -5,16 +5,16 @@ install_datastore_beeinstana() {
   install_instana_registry instana-beeinstana
 
   helm_upgrade "beeinstana-operator" "instana/beeinstana-operator" "instana-beeinstana" "${BEEINSTANA_OPERATOR_CHART_VERSION}" \
-    --set image.registry="${REGISTRY_URL}" \
-    --set image.repository="beeinstana/operator" \
-    --set image.tag="${BEEINSTANA_OPERATOR_IMAGE_TAG}" \
-    --set imagePullSecrets[0].name="instana-registry" \
+    --set-string image.registry="${REGISTRY_URL}" \
+    --set-string image.repository="beeinstana/operator" \
+    --set-string image.tag="${BEEINSTANA_OPERATOR_IMAGE_TAG}" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
     -f values/beeinstana-operator/instana_values.yaml
 
   wait_for_k8s_object secret kafka-user instana-kafka
 
   local args=(
-    "--set=kafkaSettings.password=$(get_secret_password kafka-user instana-kafka)"
+    "--set-literal=kafkaSettings.password=$(get_secret_password kafka-user instana-kafka)"
   )
 
   if [ "$CLUSTER_TYPE" == "ocp" ]; then
@@ -27,16 +27,16 @@ install_datastore_beeinstana() {
   read -ra file_args <<<"$(generate_helm_file_arguments beeinstana)"
 
   helm_upgrade "beeinstana" "instana/instana-beeinstana" "instana-beeinstana" "${BEEINSTANA_INSTANCE_CHART_VERSION}" "${args[@]}" \
-    --set aggregator.image.registry="${REGISTRY_URL}" \
-    --set aggregator.image.name="beeinstana/aggregator" \
-    --set aggregator.image.tag="${BEEINSTANA_AGGREGATOR_IMAGE_TAG}" \
-    --set config.image.registry="${REGISTRY_URL}" \
-    --set config.image.name="beeinstana/monconfig" \
-    --set config.image.tag="${BEEINSTANA_CONFIG_IMAGE_TAG}" \
-    --set ingestor.image.registry="${REGISTRY_URL}" \
-    --set ingestor.image.name="beeinstana/ingestor" \
-    --set ingestor.image.tag="${BEEINSTANA_INGESTOR_IMAGE_TAG}" \
-    --set version="${BEEINSTANA_VERSION}" \
+    --set-string aggregator.image.registry="${REGISTRY_URL}" \
+    --set-string aggregator.image.name="beeinstana/aggregator" \
+    --set-string aggregator.image.tag="${BEEINSTANA_AGGREGATOR_IMAGE_TAG}" \
+    --set-string config.image.registry="${REGISTRY_URL}" \
+    --set-string config.image.name="beeinstana/monconfig" \
+    --set-string config.image.tag="${BEEINSTANA_CONFIG_IMAGE_TAG}" \
+    --set-string ingestor.image.registry="${REGISTRY_URL}" \
+    --set-string ingestor.image.name="beeinstana/ingestor" \
+    --set-string ingestor.image.tag="${BEEINSTANA_INGESTOR_IMAGE_TAG}" \
+    --set-string version="${BEEINSTANA_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -49,13 +49,13 @@ install_datastore_cassandra() {
   fi
 
   helm_upgrade "cass-operator" "instana/cass-operator" "instana-cassandra" "${CASSANDRA_OPERATOR_CHART_VERSION}" \
-    --set image.registry="${REGISTRY_URL}" \
-    --set image.repository="self-hosted-images/3rd-party/operator/cass-operator" \
-    --set image.tag="${CASSANDRA_OPERATOR_IMAGE_TAG}" \
-    --set imagePullSecrets[0].name="instana-registry" \
-    --set appVersion="${CASSANDRA_OPERATOR_APPVERSION}" \
-    --set imageConfig.systemLogger="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/system-logger:${CASSANDRA_OPERATOR_SYSTEMLOGGER_IMAGE_TAG}" \
-    --set imageConfig.k8ssandraClient="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/k8ssandra-client:${CASSANDRA_OPERATOR_K8SSANDRACLIENT_IMAGE_TAG}" \
+    --set-string image.registry="${REGISTRY_URL}" \
+    --set-string image.repository="self-hosted-images/3rd-party/operator/cass-operator" \
+    --set-string image.tag="${CASSANDRA_OPERATOR_IMAGE_TAG}" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
+    --set-string appVersion="${CASSANDRA_OPERATOR_APPVERSION}" \
+    --set-string imageConfig.systemLogger="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/system-logger:${CASSANDRA_OPERATOR_SYSTEMLOGGER_IMAGE_TAG}" \
+    --set-string imageConfig.k8ssandraClient="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/k8ssandra-client:${CASSANDRA_OPERATOR_K8SSANDRACLIENT_IMAGE_TAG}" \
     --set securityContext.runAsGroup=999 \
     --set securityContext.runAsUser=999
 
@@ -66,8 +66,8 @@ install_datastore_cassandra() {
   read -ra file_args <<<"$(generate_helm_file_arguments cassandra)"
 
   helm_upgrade "cassandra" "instana/instana-cassandra" "instana-cassandra" "${CASSANDRA_INSTANCE_CHART_VERSION}" \
-    --set image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/cassandra:${CASSANDRA_IMAGE_TAG}" \
-    --set version="${CASSANDRA_VERSION}" \
+    --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/cassandra:${CASSANDRA_IMAGE_TAG}" \
+    --set-string version="${CASSANDRA_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -80,15 +80,15 @@ install_datastore_clickhouse() {
   fi
 
   helm_upgrade "clickhouse-operator" "instana/ibm-clickhouse-operator" "instana-clickhouse" "${CLICKHOUSE_OPERATOR_CHART_VERSION}" \
-    --set operator.image.repository="${REGISTRY_URL}/clickhouse-operator" \
-    --set operator.image.tag="${CLICKHOUSE_OPERATOR_IMAGE_TAG}" \
-    --set imagePullSecrets[0].name="instana-registry"
+    --set-string operator.image.repository="${REGISTRY_URL}/clickhouse-operator" \
+    --set-string operator.image.tag="${CLICKHOUSE_OPERATOR_IMAGE_TAG}" \
+    --set-string imagePullSecrets[0].name="instana-registry"
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments clickhouse)"
 
   helm_upgrade "clickhouse" "instana/instana-clickhouse" "instana-clickhouse" "${CLICKHOUSE_INSTANCE_CHART_VERSION}" \
-    --set image="${REGISTRY_URL}/clickhouse-openssl:${CLICKHOUSE_IMAGE_TAG}" \
+    --set-string image="${REGISTRY_URL}/clickhouse-openssl:${CLICKHOUSE_IMAGE_TAG}" \
     "${file_args[@]}"
 }
 
@@ -97,9 +97,9 @@ install_datastore_es() {
   install_instana_registry instana-elastic
 
   helm_upgrade "elastic-operator" "instana/eck-operator" "instana-elastic" "${ES_OPERATOR_CHART_VERSION}" \
-    --set image.repository="${REGISTRY_URL}/self-hosted-images/3rd-party/operator/elasticsearch" \
-    --set image.tag="${ES_OPERATOR_IMAGE_TAG}" \
-    --set imagePullSecrets[0].name="instana-registry"
+    --set-string image.repository="${REGISTRY_URL}/self-hosted-images/3rd-party/operator/elasticsearch" \
+    --set-string image.tag="${ES_OPERATOR_IMAGE_TAG}" \
+    --set-string imagePullSecrets[0].name="instana-registry"
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
   check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "elastic-operator.instana-elastic.k8s.elastic.co"
@@ -108,8 +108,8 @@ install_datastore_es() {
   read -ra file_args <<<"$(generate_helm_file_arguments elasticsearch)"
 
   helm_upgrade "elasticsearch" "instana/instana-elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
-    --set image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/elasticsearch:${ES_IMAGE_TAG}" \
-    --set version="${ES_VERSION}" \
+    --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/elasticsearch:${ES_IMAGE_TAG}" \
+    --set-string version="${ES_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -118,30 +118,30 @@ install_datastore_kafka() {
   install_instana_registry instana-kafka
 
   helm_upgrade "strimzi-kafka-operator" "instana/strimzi-kafka-operator" "instana-kafka" "${KAFKA_OPERATOR_CHART_VERSION}" \
-    --set image.registry="${REGISTRY_URL}" \
-    --set image.repository="self-hosted-images/3rd-party/operator" \
-    --set image.name="strimzi" \
-    --set image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
-    --set topicOperator.image.registry="${REGISTRY_URL}" \
-    --set topicOperator.image.repository="self-hosted-images/3rd-party/operator" \
-    --set topicOperator.image.name="strimzi" \
-    --set topicOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
-    --set userOperator.image.registry="${REGISTRY_URL}" \
-    --set userOperator.image.repository="self-hosted-images/3rd-party/operator" \
-    --set userOperator.image.name="strimzi" \
-    --set userOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
-    --set tlsSidecarEntityOperator.image.registry="${REGISTRY_URL}" \
-    --set tlsSidecarEntityOperator.image.repository="self-hosted-images/3rd-party/datastore" \
-    --set tlsSidecarEntityOperator.image.name="kafka" \
-    --set tlsSidecarEntityOperator.image.tag="${KAFKA_IMAGE_TAG}" \
-    --set image.imagePullSecrets[0].name="instana-registry"
+    --set-string image.registry="${REGISTRY_URL}" \
+    --set-string image.repository="self-hosted-images/3rd-party/operator" \
+    --set-string image.name="strimzi" \
+    --set-string image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
+    --set-string topicOperator.image.registry="${REGISTRY_URL}" \
+    --set-string topicOperator.image.repository="self-hosted-images/3rd-party/operator" \
+    --set-string topicOperator.image.name="strimzi" \
+    --set-string topicOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
+    --set-string userOperator.image.registry="${REGISTRY_URL}" \
+    --set-string userOperator.image.repository="self-hosted-images/3rd-party/operator" \
+    --set-string userOperator.image.name="strimzi" \
+    --set-string userOperator.image.tag="${KAFKA_OPERATOR_IMAGE_TAG}" \
+    --set-string tlsSidecarEntityOperator.image.registry="${REGISTRY_URL}" \
+    --set-string tlsSidecarEntityOperator.image.repository="self-hosted-images/3rd-party/datastore" \
+    --set-string tlsSidecarEntityOperator.image.name="kafka" \
+    --set-string tlsSidecarEntityOperator.image.tag="${KAFKA_IMAGE_TAG}" \
+    --set-string image.imagePullSecrets[0].name="instana-registry"
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments kafka)"
 
   helm_upgrade "kafka" "instana/instana-kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
-    --set image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/kafka:${KAFKA_IMAGE_TAG}" \
-    --set version="${KAFKA_VERSION}" \
+    --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/kafka:${KAFKA_IMAGE_TAG}" \
+    --set-string version="${KAFKA_VERSION}" \
     "${file_args[@]}"
 }
 
@@ -150,9 +150,9 @@ install_datastore_postgres() {
   install_instana_registry instana-postgres
 
   local args=(
-    "--set=image.repository=${REGISTRY_URL}/self-hosted-images/3rd-party/operator/cloudnative-pg"
-    "--set=image.tag=${POSTGRES_OPERATOR_IMAGE_TAG}"
-    "--set=imagePullSecrets[0].name=instana-registry"
+    "--set-string=image.repository=${REGISTRY_URL}/self-hosted-images/3rd-party/operator/cloudnative-pg"
+    "--set-string=image.tag=${POSTGRES_OPERATOR_IMAGE_TAG}"
+    "--set-string=imagePullSecrets[0].name=instana-registry"
   )
 
   if [ "$CLUSTER_TYPE" == "ocp" ]; then
@@ -172,7 +172,7 @@ install_datastore_postgres() {
   read -ra file_args <<<"$(generate_helm_file_arguments postgres)"
 
   helm_upgrade "postgres" "instana/instana-postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
-    --set image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/cnpg-containers:${POSTGRES_IMAGE_TAG}" \
+    --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/cnpg-containers:${POSTGRES_IMAGE_TAG}" \
     "${file_args[@]}"
 }
 

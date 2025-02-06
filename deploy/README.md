@@ -177,16 +177,50 @@ storageConfigs:
       bucketLongTerm: ""
       prefixLongTerm: ""
       storageClassLongTerm: ""
-  eumSourceMaps:
-    s3Config:
-      endpoint: ""
-      region: ""
-      bucket: ""
-      prefix: ""
-      storageClass: ""
-      bucketLongTerm: ""
-      prefixLongTerm: ""
-      storageClassLongTerm: ""
+eumSourceMaps:
+  s3Config:
+    endpoint: ""
+    region: ""
+    bucket: ""
+    prefix: ""
+    storageClass: ""
+    bucketLongTerm: ""
+    prefixLongTerm: ""
+    storageClassLongTerm: ""
+```
+_Example of_ `featureflags`
+```yaml
+featureFlags:
+  - name: feature.logging.enabled
+    enabled: true
+  - name: feature.synthetics.enabled
+    enabled: true
+  - name: feature.internal.monitoring.unit
+    enabled: true
+
+```
+note: Before enabling Synthetic monitoring, configure two external storage configurations in the storageConfigs section in the Core spec (synthetics, syntheticsKeystore)
+```yaml
+synthetics:
+  s3Config:
+    endpoint: ""
+    region: ""
+    bucket: ""
+    prefix: ""
+    storageClass: ""
+    bucketLongTerm: ""
+    prefixLongTerm: ""
+    storageClassLongTerm: ""
+syntheticsKeystore:
+  s3Config:
+    endpoint: ""
+    region: ""
+    bucket: ""
+    prefix: ""
+    storageClass: ""
+    bucketLongTerm: ""
+    prefixLongTerm: ""
+    storageClassLongTerm: ""
 ```
 
 ## Installation

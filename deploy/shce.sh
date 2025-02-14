@@ -178,7 +178,6 @@ install_instana_unit() {
   helm_upgrade "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}" "instana/instana-unit" "instana-units" "${INSTANA_UNIT_CHART_VERSION}" \
     --set-string coreName=instana-core \
     --set-string coreNamespace=instana-core \
-    --set-string resourceProfile=small \
     --set licenses="{$license_content}" \
     --set agentKeys="{$SALES_KEY}" \
     --set-literal downloadKey="$DOWNLOAD_KEY" \

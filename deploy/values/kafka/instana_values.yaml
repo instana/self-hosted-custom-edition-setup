@@ -1,6 +1,5 @@
 nameOverride: kafka
 fullnameOverride: kafka
-priorityClassName: "system-cluster-critical"
 replicas:
   kafka: 3
   zookeeper: 3

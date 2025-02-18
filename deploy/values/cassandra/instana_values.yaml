@@ -1,6 +1,5 @@
 nameOverride: cassandra
 fullnameOverride: cassandra
-priorityClassName: "system-cluster-critical"
 size: 3
 resources:
   requests:

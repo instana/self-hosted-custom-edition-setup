@@ -1,7 +1,6 @@
 nameOverride: beeinstana
 fullnameOverride: beeinstana
 imagePullSecretName: "instana-registry"
-priorityClassName: "system-cluster-critical"
 aggregator:
   cpu: 4
   memory: 16Gi

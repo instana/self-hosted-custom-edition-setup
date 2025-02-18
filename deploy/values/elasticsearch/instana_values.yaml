@@ -4,7 +4,6 @@ nodeSets:
   - name: default
     count: 3
     containerName: "elasticsearch"
-    priorityClassName: "system-cluster-critical"
     config:
       node.roles:
         - master

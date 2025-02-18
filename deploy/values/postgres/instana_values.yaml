@@ -1,6 +1,5 @@
 nameOverride: postgres
 fullnameOverride: postgres
-priorityClassName: "system-cluster-critical"
 instances: 3
 resources:
   requests:

@@ -1,6 +1,5 @@
 nameOverride: clickhouse
 fullnameOverride: clickhouse
-priorityClassName: "system-cluster-critical"
 clickhouse:
   clusters:
     layout:

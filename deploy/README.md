@@ -140,10 +140,34 @@ aggregator:
 
 ### Core
 
+#### Configure Instana Backend Versions
+
+> [! NOTE]
+> We can configure the Instana backend version in the `CoreSpec` [Reference](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-api-reference#imageconfig)
+
+_Example of_ configuring the Instana backend release:
+
+In `values/core/custom_values.yaml`, configure the `imageConfig`.
+
+```yaml
+imageConfig:
+  tag: 3.289.617.0
+  # registry: artifact-public.instana.io
+  # repository: backend
+```
+
+#### Email Configuration:
+
+_Example of_ `emailConfig`:
+
 In `values/core/custom_values.yaml`, update the SMTP host and storage configurations as per the deployment environment:
 
-- `storageConfigs.rawSpans.pvcConfig.storageClassName`
-- `storageConfigs.eumSourceMaps.pvcConfig.storageClassName`
+```yaml
+emailConfig:
+  smtpConfig:
+    from: "your-email-address"
+    host: "your-smtp-host"
+```
 
 _Example of_ `storageConfigs` with `pvcConfig`:
 

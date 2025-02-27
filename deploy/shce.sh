@@ -157,6 +157,7 @@ install_instana_core() {
     --set-literal datastores.kafka.adminPassword="$(get_secret_password kafka-admin instana-kafka)" \
     --set-literal datastores.kafka.consumerPassword="$(get_secret_password kafka-user instana-kafka)" \
     --set-literal datastores.kafka.producerPassword="$(get_secret_password kafka-user instana-kafka)" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-core" "core" "instana-core"

@@ -37,6 +37,7 @@ install_datastore_beeinstana() {
     --set-string ingestor.image.name="beeinstana/ingestor" \
     --set-string ingestor.image.tag="${BEEINSTANA_INGESTOR_IMAGE_TAG}" \
     --set-string version="${BEEINSTANA_VERSION}" \
+    --set-string imagePullSecretName="instana-registry" \
     "${file_args[@]}"
 }
 
@@ -68,6 +69,7 @@ install_datastore_cassandra() {
   helm_upgrade "cassandra" "instana/instana-cassandra" "instana-cassandra" "${CASSANDRA_INSTANCE_CHART_VERSION}" \
     --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/cassandra:${CASSANDRA_IMAGE_TAG}" \
     --set-string version="${CASSANDRA_VERSION}" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 }
 
@@ -89,6 +91,7 @@ install_datastore_clickhouse() {
 
   helm_upgrade "clickhouse" "instana/instana-clickhouse" "instana-clickhouse" "${CLICKHOUSE_INSTANCE_CHART_VERSION}" \
     --set-string image="${REGISTRY_URL}/clickhouse-openssl:${CLICKHOUSE_IMAGE_TAG}" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 }
 
@@ -110,6 +113,7 @@ install_datastore_es() {
   helm_upgrade "elasticsearch" "instana/instana-elasticsearch" "instana-elastic" "${ES_INSTANCE_CHART_VERSION}" \
     --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/elasticsearch:${ES_IMAGE_TAG}" \
     --set-string version="${ES_VERSION}" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 }
 
@@ -142,6 +146,7 @@ install_datastore_kafka() {
   helm_upgrade "kafka" "instana/instana-kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
     --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/kafka:${KAFKA_IMAGE_TAG}" \
     --set-string version="${KAFKA_VERSION}" \
+    --set-string image.imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 }
 
@@ -173,6 +178,7 @@ install_datastore_postgres() {
 
   helm_upgrade "postgres" "instana/instana-postgres" "instana-postgres" "${POSTGRES_INSTANCE_CHART_VERSION}" \
     --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/cnpg-containers:${POSTGRES_IMAGE_TAG}" \
+    --set-string=imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 }
 

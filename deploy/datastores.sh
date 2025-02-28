@@ -146,7 +146,7 @@ install_datastore_kafka() {
   helm_upgrade "kafka" "instana/instana-kafka" "instana-kafka" "${KAFKA_INSTANCE_CHART_VERSION}" \
     --set-string image="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/kafka:${KAFKA_IMAGE_TAG}" \
     --set-string version="${KAFKA_VERSION}" \
-    --set-string image.imagePullSecrets[0].name="instana-registry" \
+    --set-string imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 }
 

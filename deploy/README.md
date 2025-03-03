@@ -183,8 +183,31 @@ storageConfigs:
     pvcConfig:
       storageClassName: "your-storage-class"
 ```
+for enabling syntetics with pvc configs:
+```yaml
+storageConfigs:
+  synthetics:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: "your-storage-class"
+  syntheticsKeystore:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: "your-storage-class"
+```
 
 _Example of_ `storageConfigs` with `s3Config`:
+* Provision IAM Role with S3 Access
+* Create IAM Trust Relationship with Service Account
+* ServiceAccountAnnotations should be configured in the core spec
 
 - `storageConfigs.rawSpans.s3Config`
 - `storageConfigs.eumSourceMaps.s3Config`
@@ -193,25 +216,39 @@ _Example of_ `storageConfigs` with `s3Config`:
 storageConfigs:
   rawSpans:
     s3Config:
-      endpoint: ""
-      region: ""
-      bucket: ""
-      prefix: ""
-      storageClass: ""
-      bucketLongTerm: ""
-      prefixLongTerm: ""
-      storageClassLongTerm: ""
-eumSourceMaps:
-  s3Config:
-    endpoint: ""
-    region: ""
-    bucket: ""
-    prefix: ""
-    storageClass: ""
-    bucketLongTerm: ""
-    prefixLongTerm: ""
-    storageClassLongTerm: ""
+      endpoint: s3.<s3-region>.amazonaws.com
+      region: <s3-region>
+      bucket: <bucket-name>
+      prefix: <prefix-name>
+      storageClass: <storage-class>
+      bucketLongTerm: <bucket-name-longterm>
+      prefixLongTerm: <prefix-name-longterm>
+      storageClassLongTerm: <storage-class-longterm>
+  eumSourceMaps:
+    s3Config:
+      endpoint: s3.<s3-region>.amazonaws.com
+      region: <s3-region>
+      bucket: <bucket-name>
+      prefix: <prefix-name>
+      storageClass: <storage-class>
+      bucketLongTerm: <bucket-name-longterm>
+      prefixLongTerm: <prefix-name-longterm>
+      storageClassLongTerm: <storage-class-longterm>
+serviceAccountAnnotations:
+  eks.amazonaws.com/role-arn: "arn:aws:iam::<ReplaceAccountID>:role/<IAM Role>"
 ```
+Configuration fields:
+| Field                  | Description                                                                                   |
+|------------------------|-----------------------------------------------------------------------------------------------|
+| `endpoint`             | The S3 endpoint for the specified AWS region. Replace `<s3-region>` with your desired region (e.g., `us-west-2`). |
+| `region`               | The AWS region where the S3 bucket is located (e.g., `us-west-2`).                             |
+| `bucket`               | The name of the S3 bucket where the data will be stored (e.g., `my-data-bucket`).              |
+| `prefix`               | The path or folder in the S3 bucket where the data is stored (e.g., `rawspans/`).              |
+| `storageClass`         | The storage class for primary data (e.g., `Standard`, `Intelligent-Tiering`, `Glacier`).        |
+| `bucketLongTerm`       | The name of the S3 bucket for long-term storage of data (e.g., `my-longterm-backups`).         |
+| `prefixLongTerm`       | The path or folder in the long-term storage bucket for organizing the data (e.g., `archives/`).|
+| `storageClassLongTerm` | The storage class for long-term data storage (e.g., `Standard`, `Deep_Archive`).                |
+
 _Example of_ `featureflags`
 ```yaml
 featureFlags:
@@ -224,27 +261,31 @@ featureFlags:
 
 ```
 note: Before enabling Synthetic monitoring, configure two external storage configurations in the storageConfigs section in the Core spec (synthetics, syntheticsKeystore)
+
 ```yaml
-synthetics:
-  s3Config:
-    endpoint: ""
-    region: ""
-    bucket: ""
-    prefix: ""
-    storageClass: ""
-    bucketLongTerm: ""
-    prefixLongTerm: ""
-    storageClassLongTerm: ""
-syntheticsKeystore:
-  s3Config:
-    endpoint: ""
-    region: ""
-    bucket: ""
-    prefix: ""
-    storageClass: ""
-    bucketLongTerm: ""
-    prefixLongTerm: ""
-    storageClassLongTerm: ""
+storageConfigs:
+  synthetics:
+    s3Config:
+      endpoint: s3.<s3-region>.amazonaws.com
+      region: <s3-region>
+      bucket: <bucket-name>
+      prefix: <prefix-name>
+      storageClass: <storage-class>
+      bucketLongTerm: <bucket-name-longterm>
+      prefixLongTerm: <prefix-name-longterm>
+      storageClassLongTerm: <storage-class-longterm>
+  syntheticsKeystore:
+    s3Config:
+      endpoint: s3.<s3-region>.amazonaws.com
+      region: <s3-region>
+      bucket: <bucket-name>
+      prefix: <prefix-name>
+      storageClass: <storage-class>
+      bucketLongTerm: <bucket-name-longterm>
+      prefixLongTerm: <prefix-name-longterm>
+      storageClassLongTerm: <storage-class-longterm>
+serviceAccountAnnotations:
+  eks.amazonaws.com/role-arn: "arn:aws:iam::<ReplaceAccountID>:role/<IAM Role>"
 ```
 
 ## Installation

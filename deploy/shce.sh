@@ -89,10 +89,17 @@ install_instana_operator() {
   helm_upgrade "instana-enterprise-operator" "instana/instana-enterprise-operator" "instana-operator" "${INSTANA_OPERATOR_CHART_VERSION}" \
     --set-string image.registry="${REGISTRY_URL}" \
     --set-string image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
+    --set-string operator.image.registry="${REGISTRY_URL}" \
+    --set-string operator.image.repository="infrastructure/instana-enterprise-operator" \
+    --set-string operator.image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
+    --set-string webhook.image.registry="${REGISTRY_URL}" \
+    --set-string webhook.image.repository="infrastructure/instana-enterprise-operator-webhook" \
+    --set-string webhook.image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
     --set-string imagePullSecrets[0].name=instana-registry
 
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
 }
+
 
 create_instana_routes() {
   if [ "$CLUSTER_TYPE" == "ocp" ]; then

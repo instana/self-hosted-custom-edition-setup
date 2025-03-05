@@ -256,8 +256,7 @@ welcome_to_instana() {
 * Successfully installed Instana Self-Hosted Custom Edition on ${CLUSTER_TYPE}!
 *
 *  URL: https://${BASE_DOMAIN}
-*   Username : ${INSTANA_ADMIN_USER}
-*   Password : ${INSTANA_ADMIN_PASSWORD}
+*  Username : ${INSTANA_ADMIN_USER}
 *
 *******************************************************************************
 "

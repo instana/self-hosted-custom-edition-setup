@@ -219,6 +219,22 @@ uninstall_instana_core() {
 
   helm_uninstall "instana-registry" "instana-core"
 
+  # Check if the cluster type is AKS
+  if [ "$CLUSTER_TYPE" == "aks" ]; then
+    # Delete the Azure storage account secret if it exists
+    kubectl delete secret azure-storage-account -n instana-core
+
+    # Delete the PersistentVolume associated with the Instana core
+    kubectl delete pv azure-volume
+
+    pvc_name=$(kubectl get pvc -n instana-core -o jsonpath='{.items[?(@.spec.volumeName=="azure-volume")].metadata.name}')
+    if [ -n "$pvc_name" ]; then
+      kubectl delete pvc "$pvc_name" -n instana-core
+    else
+      info "No PVC with volume name 'azure-volume' found in the 'instana-core' namespace."
+    fi
+  fi
+
   delete_namespace "instana-core"
 }
 

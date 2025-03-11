@@ -261,6 +261,11 @@ storageConfigs:
       volumeName: "azure-volume"
       storageClassName: "" ## provide the sc which support read write many operation , eg: azurefile
 ```
+_Example of_ `pv_template` for `azure`:
+modify the pv_template_aks.yaml and add the storageclass name :
+```yaml
+storageClassName: azurefile ##use "azurefile" if your aks cluster is having the preconfigured storageclasses
+```
 
 Configuration fields:
 | Field                  | Description                                                                                   |

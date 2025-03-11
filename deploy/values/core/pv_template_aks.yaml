@@ -9,6 +9,8 @@ spec:
     - ReadWriteMany
   azureFile:
     secretName: azure-storage-account
+    secretNamespace: instana-core
     shareName: {{AZURE_STORAGE_FILESHARE_NAME}}
     readOnly: false
+  storageClassName: "" ##use "azurefile" if you have azurefile as one of the storage classes on aks
   persistentVolumeReclaimPolicy: Retain

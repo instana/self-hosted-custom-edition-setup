@@ -9,6 +9,6 @@ spec:
     - ReadWriteMany
   azureFile:
     secretName: azure-storage-account
-    shareName: {{AZURE_STORAGE_ACCOUNT}}
+    shareName: {{AZURE_STORAGE_FILESHARE_NAME}}
     readOnly: false
   persistentVolumeReclaimPolicy: Retain

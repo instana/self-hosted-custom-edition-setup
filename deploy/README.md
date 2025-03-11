@@ -119,6 +119,7 @@ HELM_REPO_PASSWORD=<helm repository password>
 
 # The following environment variables are only required if the cluster type is aks (Azure Cloud).
 AZURE_STORAGE_ACCOUNT=<azure file storage account name>
+AZURE_STORAGE_FILESHARE_NAME=<name of the fileshare in azure storage account>
 AZURE_STORAGE_ACCOUNT_KEY=<azure storage account key>
 AZURE_STORAGE_CAPACITY=<PersistentVolume size> # By default 100Gi
 ```

@@ -237,6 +237,30 @@ storageConfigs:
 serviceAccountAnnotations:
   eks.amazonaws.com/role-arn: "arn:aws:iam::<ReplaceAccountID>:role/<IAM Role>"
 ```
+_Example of_ `storageConfigs` for `azure`:
+modify the instana_values_aks.yaml or create custom_values.yaml and add the below
+```yaml
+storageConfigs:
+  rawSpans:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      volumeName: "azure-volume"
+      storageClassName: ""
+  eumSourceMaps:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      volumeName: "azure-volume"
+      storageClassName: "" ## provide the sc which support read write many operation , eg: azurefile
+```
+
 Configuration fields:
 | Field                  | Description                                                                                   |
 |------------------------|-----------------------------------------------------------------------------------------------|

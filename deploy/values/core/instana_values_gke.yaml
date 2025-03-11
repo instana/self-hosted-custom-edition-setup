@@ -1,23 +1,8 @@
 storageConfigs:
-  rawSpans:
-    gcloudConfig:
-      bucket: ""
-      bucketLongTerm: ""
-      prefix: ""
-      prefixLongTerm: ""
-      storageClass: ""
-      storageClassLongTerm: ""
-  eumSourceMaps:
-    gcloudConfig:
-      bucket: ""
-      bucketLongTerm: ""
-      prefix: ""
-      prefixLongTerm: ""
-      storageClass: ""
-      storageClassLongTerm: ""
-serviceAccountAnnotations:
-  iam.gke.io/gcp-service-account: ""
-services: 
+  rawSpans: {}
+  eumSourceMaps: {}
+serviceAccountAnnotations: {}
+services:
 - nameSuffix: lb-acceptor
   ports:
   - name: https
@@ -29,7 +14,7 @@ services:
     app.kubernetes.io/name: instana
     instana.io/group: service
   type: LoadBalancer
-  loadBalancerIP: "" 
+  loadBalancerIP: ""
 - nameSuffix: lb-gateway
   ports:
   - name: https
@@ -44,5 +29,5 @@ services:
     app.kubernetes.io/component: gateway
     app.kubernetes.io/name: instana
     instana.io/group: service
-  type: LoadBalancer  
+  type: LoadBalancer
   loadBalancerIP: ""

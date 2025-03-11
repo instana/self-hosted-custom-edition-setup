@@ -1,21 +1,6 @@
 storageConfigs:
-  rawSpans:
-    pvcConfig:
-      accessModes:
-        - ReadWriteMany
-      resources:
-        requests:
-          storage: 100Gi
-      volumeName: "azure-volume"
-      storageClassName: ""
-  eumSourceMaps:
-    pvcConfig:
-      accessModes:
-        - ReadWriteMany
-      resources:
-        requests:
-          storage: 100Gi
-      storageClassName: "" ## provide the sc which support read write many operation , eg: azurefile
+  rawSpans: {}
+  eumSourceMaps: {}
 
 services:
 - nameSuffix: lb-acceptor
@@ -46,4 +31,4 @@ services:
     instana.io/group: service
   type: LoadBalancer
   loadBalancerIP: ""
-  
+

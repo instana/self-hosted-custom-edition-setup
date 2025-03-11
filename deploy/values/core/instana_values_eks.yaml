@@ -1,8 +1,7 @@
 storageConfigs:
   rawSpans: {}
   eumSourceMaps: {}
-serviceAccountAnnotations:
-  eks.amazonaws.com/role-arn: ""
+serviceAccountAnnotations: {}
 services:
 - nameSuffix: lb-acceptor
   ports:

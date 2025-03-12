@@ -187,7 +187,7 @@ install_instana_unit() {
     --set-string coreName=instana-core \
     --set-string coreNamespace=instana-core \
     --set licenses="{$license_content}" \
-    --set agentKeys="{$SALES_KEY}" \
+    --set agentKeys="{$AGENT_KEY}" \
     --set-literal downloadKey="$DOWNLOAD_KEY" \
     --set-literal initialAdminUser="$INSTANA_ADMIN_USER" \
     --set-literal initialAdminPassword="$INSTANA_ADMIN_PASSWORD" \

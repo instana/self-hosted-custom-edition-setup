@@ -89,7 +89,7 @@ export CLUSTER_TYPE=ocp
 
 ### config.env File
 
-Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`
+Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY`
 , `BASE_DOMAIN`, and `AGENT_ACCEPTOR` information.
 
 Example:
@@ -97,6 +97,7 @@ Example:
 ```bash
 SALES_KEY=
 DOWNLOAD_KEY=
+AGENT_KEY=
 
 BASE_DOMAIN=<base-domain>
 AGENT_ACCEPTOR=agent-acceptor.<base-domain>

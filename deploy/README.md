@@ -252,22 +252,27 @@ storageConfigs:
           storage: 100Gi
       volumeName: "azure-volume"
       storageClassName: ""
-  eumSourceMaps:
-    pvcConfig:
-      accessModes:
-        - ReadWriteMany
-      resources:
-        requests:
-          storage: 100Gi
-      volumeName: "azure-volume"
-      storageClassName: "" ## provide the sc which support read write many operation , eg: azurefile
 ```
 _Example of_ `pv_template` for `azure`:
 modify the pv_template_aks.yaml and add the storageclass name :
 ```yaml
-storageClassName: azurefile ##use "azurefile" if your aks cluster is having the preconfigured storageclasses
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: azure-volume
+spec:
+  capacity:
+    storage: {{AZURE_STORAGE_CAPACITY}}
+  accessModes:
+    - ReadWriteMany
+  azureFile:
+    secretName: azure-storage-account
+    secretNamespace: instana-core
+    shareName: {{AZURE_STORAGE_FILESHARE_NAME}}
+    readOnly: false
+  storageClassName: "" ##use "azurefile" if you have azurefile as one of the storage classes on aks
+  persistentVolumeReclaimPolicy: Retain
 ```
-
 Configuration fields:
 | Field                  | Description                                                                                   |
 |------------------------|-----------------------------------------------------------------------------------------------|

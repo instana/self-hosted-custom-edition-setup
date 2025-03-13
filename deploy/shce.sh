@@ -138,7 +138,7 @@ install_instana_core() {
     CAPACITY="${AZURE_STORAGE_CAPACITY:-100Gi}"
 
     # Apply the PersistentVolume definition
-    sed "s/{{AZURE_STORAGE_ACCOUNT}}/${AZURE_STORAGE_ACCOUNT}/g; s/{{AZURE_STORAGE_CAPACITY}}/${CAPACITY}/g" ./values/core/pv_template_aks.yaml | kubectl apply -f -
+    sed "s/{{AZURE_STORAGE_FILESHARE_NAME}}/${AZURE_STORAGE_FILESHARE_NAME}/g; s/{{AZURE_STORAGE_CAPACITY}}/${CAPACITY}/g" ./values/core/pv_template_aks.yaml | kubectl apply -f -
   fi
 
   local file_args
@@ -218,21 +218,17 @@ uninstall_instana_core() {
   done
 
   helm_uninstall "instana-registry" "instana-core"
-
-  # Check if the cluster type is AKS
+  
   if [ "$CLUSTER_TYPE" == "aks" ]; then
-    # Delete the Azure storage account secret if it exists
-    kubectl delete secret azure-storage-account -n instana-core
+    # Check if the Azure storage account secret exists, then delete it
+    kubectl get secret azure-storage-account -n instana-core &> /dev/null && kubectl delete secret azure-storage-account -n instana-core
 
-    # Delete the PersistentVolume associated with the Instana core
-    kubectl delete pv azure-volume
+    # Check if the PersistentVolume exists, then delete it
+    kubectl get pv azure-volume &> /dev/null && kubectl delete pv azure-volume
 
+    # Delete the PVC with volume name 'azure-volume' if it exists
     pvc_name=$(kubectl get pvc -n instana-core -o jsonpath='{.items[?(@.spec.volumeName=="azure-volume")].metadata.name}')
-    if [ -n "$pvc_name" ]; then
-      kubectl delete pvc "$pvc_name" -n instana-core
-    else
-      info "No PVC with volume name 'azure-volume' found in the 'instana-core' namespace."
-    fi
+    [ -n "$pvc_name" ] && kubectl delete pvc "$pvc_name" -n instana-core
   fi
 
   delete_namespace "instana-core"

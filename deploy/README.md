@@ -144,7 +144,7 @@ aggregator:
 
 #### Configure Instana Backend Versions
 
-> [! NOTE]
+> [!NOTE]
 > We can configure the Instana backend version in the `CoreSpec` [Reference](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-api-reference#imageconfig)
 
 _Example of_ configuring the Instana backend release:
@@ -173,36 +173,26 @@ emailConfig:
 
 _Example of_ `storageConfigs` with `pvcConfig`:
 
-- `storageConfigs.rawSpans.pvcConfig.storageClassName`
-- `storageConfigs.eumSourceMaps.pvcConfig.storageClassName`
+- `storageConfigs.rawSpans.pvcConfig`
+- `storageConfigs.eumSourceMaps.pvcConfig`
 
 ```yaml
 storageConfigs:
   rawSpans:
     pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
       storageClassName: "your-storage-class"
   eumSourceMaps:
     pvcConfig:
-      storageClassName: "your-storage-class"
-```
-for enabling syntetics with pvc configs:
-```yaml
-storageConfigs:
-  synthetics:
-    pvcConfig:
       accessModes:
         - ReadWriteMany
       resources:
         requests:
-          storage: 10Gi
-      storageClassName: "your-storage-class"
-  syntheticsKeystore:
-    pvcConfig:
-      accessModes:
-        - ReadWriteMany
-      resources:
-        requests:
-          storage: 10Gi
+          storage: 100Gi
       storageClassName: "your-storage-class"
 ```
 
@@ -239,8 +229,9 @@ storageConfigs:
 serviceAccountAnnotations:
   eks.amazonaws.com/role-arn: "arn:aws:iam::<ReplaceAccountID>:role/<IAM Role>"
 ```
-_Example of_ `storageConfigs` for `azure`:
-modify the instana_values_aks.yaml or create custom_values.yaml and add the below
+
+_Example of_ `storageConfigs` for `Azure`:
+
 ```yaml
 storageConfigs:
   rawSpans:
@@ -253,8 +244,12 @@ storageConfigs:
       volumeName: "azure-volume"
       storageClassName: ""
 ```
+
 _Example of_ `pv_template` for `azure`:
-modify the pv_template_aks.yaml and add the storageclass name :
+
+> [!NOTE]
+> Modify the `pv_template_aks.yaml` and update the `storageClassName`
+
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -270,9 +265,10 @@ spec:
     secretNamespace: instana-core
     shareName: {{AZURE_STORAGE_FILESHARE_NAME}}
     readOnly: false
-  storageClassName: "" ##use "azurefile" if you have azurefile as one of the storage classes on aks
+  storageClassName: "" # use "azurefile" if you have azurefile as one of the storage classes on aks
   persistentVolumeReclaimPolicy: Retain
 ```
+
 Configuration fields:
 | Field                  | Description                                                                                   |
 |------------------------|-----------------------------------------------------------------------------------------------|
@@ -286,6 +282,7 @@ Configuration fields:
 | `storageClassLongTerm` | The storage class for long-term data storage (e.g., `Standard`, `Deep_Archive`).                |
 
 _Example of_ `featureflags`
+
 ```yaml
 featureFlags:
   - name: feature.logging.enabled
@@ -294,9 +291,40 @@ featureFlags:
     enabled: true
   - name: feature.internal.monitoring.unit
     enabled: true
-
 ```
-note: Before enabling Synthetic monitoring, configure two external storage configurations in the storageConfigs section in the Core spec (synthetics, syntheticsKeystore)
+
+> [!NOTE]
+> Before enabling Synthetic monitoring, configure storage configurations in the storageConfigs section in the Core spec (`synthetics`, `syntheticsKeystore`)
+
+_Example of_ `storageConfigs` with `pvcConfig` for `synthetics` and `syntheticsKeystore`:
+
+- `storageConfigs.synthetics.pvcConfig`
+- `storageConfigs.syntheticsKeystore.pvcConfig`
+
+```yaml
+storageConfigs:
+  synthetics:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: "your-storage-class"
+  syntheticsKeystore:
+    pvcConfig:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 100Gi
+      storageClassName: "your-storage-class"
+```
+
+_Example of_ `storageConfigs` with `s3Config` for `synthetics` and `syntheticsKeystore`:
+
+- `storageConfigs.synthetics.s3Config`
+- `storageConfigs.syntheticsKeystore.s3Config`
 
 ```yaml
 storageConfigs:
@@ -320,8 +348,6 @@ storageConfigs:
       bucketLongTerm: <bucket-name-longterm>
       prefixLongTerm: <prefix-name-longterm>
       storageClassLongTerm: <storage-class-longterm>
-serviceAccountAnnotations:
-  eks.amazonaws.com/role-arn: "arn:aws:iam::<ReplaceAccountID>:role/<IAM Role>"
 ```
 
 ## Installation

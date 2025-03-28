@@ -92,6 +92,9 @@ export CLUSTER_TYPE=ocp
 Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY`
 , `BASE_DOMAIN`, and `AGENT_ACCEPTOR` information.
 
+> [!NOTE]
+> If `AGENT_KEY` is not configured, defaults to `DOWNLOAD_KEY`.
+
 Example:
 
 ```bash

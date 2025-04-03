@@ -4,3 +4,5 @@ clickhouse:
   clusters:
     layout:
       replicasCount: 2
+keeper:
+  replicas: 3

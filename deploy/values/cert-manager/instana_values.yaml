@@ -1,0 +1,6 @@
+global:
+  imagePullSecrets:
+    - name: "instana-registry"
+crds:
+  enabled: true
+  keep: true

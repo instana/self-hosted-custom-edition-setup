@@ -9,12 +9,12 @@ The tool is based on Helm charts and values and allows for custom installations 
 
 Before installation, ensure the following prerequisites are met:
 
-| #   | Prerequisite                    | Reason                                              |
-| --- |---------------------------------| --------------------------------------------------- |
-| 1   | Helm is installed               | Needed to deploy Helm charts                        |
-| 2   | A default storage class is set  | Required for successful data store installations    |
-| 3   | Kubernetes version > 1.25       | Instana requires Kubernetes version 1.25 or higher  |
-| 4   | OCP version > 4.13              | Required to deploy Instana on OpenShift             |
+| #   | Prerequisite                   | Reason                                             |
+| --- | ------------------------------ | -------------------------------------------------- |
+| 1   | Helm is installed              | Needed to deploy Helm charts                       |
+| 2   | A default storage class is set | Required for successful data store installations   |
+| 3   | Kubernetes version > 1.25      | Instana requires Kubernetes version 1.25 or higher |
+| 4   | OCP version > 4.13             | Required to deploy Instana on OpenShift            |
 
 ### Helm
 
@@ -200,12 +200,13 @@ storageConfigs:
 ```
 
 _Example of_ `storageConfigs` with `s3Config`:
-* Provision IAM Role with S3 Access
-* Create IAM Trust Relationship with Service Account
-* ServiceAccountAnnotations should be configured in the core spec
 
-- `storageConfigs.rawSpans.s3Config`
-- `storageConfigs.eumSourceMaps.s3Config`
+- Provision IAM Role with S3 Access
+- Create IAM Trust Relationship with Service Account
+- ServiceAccountAnnotations should be configured in the core spec
+
+* `storageConfigs.rawSpans.s3Config`
+* `storageConfigs.eumSourceMaps.s3Config`
 
 ```yaml
 storageConfigs:
@@ -260,29 +261,29 @@ metadata:
   name: azure-volume
 spec:
   capacity:
-    storage: {{AZURE_STORAGE_CAPACITY}}
+    storage: { { AZURE_STORAGE_CAPACITY } }
   accessModes:
     - ReadWriteMany
   azureFile:
     secretName: azure-storage-account
     secretNamespace: instana-core
-    shareName: {{AZURE_STORAGE_FILESHARE_NAME}}
+    shareName: { { AZURE_STORAGE_FILESHARE_NAME } }
     readOnly: false
   storageClassName: "" # use "azurefile" if you have azurefile as one of the storage classes on aks
   persistentVolumeReclaimPolicy: Retain
 ```
 
 Configuration fields:
-| Field                  | Description                                                                                   |
+| Field | Description |
 |------------------------|-----------------------------------------------------------------------------------------------|
-| `endpoint`             | The S3 endpoint for the specified AWS region. Replace `<s3-region>` with your desired region (e.g., `us-west-2`). |
-| `region`               | The AWS region where the S3 bucket is located (e.g., `us-west-2`).                             |
-| `bucket`               | The name of the S3 bucket where the data will be stored (e.g., `my-data-bucket`).              |
-| `prefix`               | The path or folder in the S3 bucket where the data is stored (e.g., `rawspans/`).              |
-| `storageClass`         | The storage class for primary data (e.g., `Standard`, `Intelligent-Tiering`, `Glacier`).        |
-| `bucketLongTerm`       | The name of the S3 bucket for long-term storage of data (e.g., `my-longterm-backups`).         |
-| `prefixLongTerm`       | The path or folder in the long-term storage bucket for organizing the data (e.g., `archives/`).|
-| `storageClassLongTerm` | The storage class for long-term data storage (e.g., `Standard`, `Deep_Archive`).                |
+| `endpoint` | The S3 endpoint for the specified AWS region. Replace `<s3-region>` with your desired region (e.g., `us-west-2`). |
+| `region` | The AWS region where the S3 bucket is located (e.g., `us-west-2`). |
+| `bucket` | The name of the S3 bucket where the data will be stored (e.g., `my-data-bucket`). |
+| `prefix` | The path or folder in the S3 bucket where the data is stored (e.g., `rawspans/`). |
+| `storageClass` | The storage class for primary data (e.g., `Standard`, `Intelligent-Tiering`, `Glacier`). |
+| `bucketLongTerm` | The name of the S3 bucket for long-term storage of data (e.g., `my-longterm-backups`). |
+| `prefixLongTerm` | The path or folder in the long-term storage bucket for organizing the data (e.g., `archives/`).|
+| `storageClassLongTerm` | The storage class for long-term data storage (e.g., `Standard`, `Deep_Archive`). |
 
 _Example of_ `featureflags`
 
@@ -400,12 +401,12 @@ in `instana-core` namespace.
 Make sure you have a domain name and a DNS zone for your Instana environment. Then, add DNS A records in the zone for the
 following domains:
 
-| Domain | Description                                  | Example name            |
-|-------------|----------------------------------------------|---------------------|
-|Base domain </br> `<base_domain>` |The fully qualified domain name (FQDN) that you can use to reach Instana. Points to the public IP address of your host. |`instana.example.com`|
-|Agent acceptor subdomain </br> `agent-acceptor.<base_domain>` |Domain name for Instana agent traffic. Points to the public IP address of your host.|`agent-acceptor.instana.example.com`|
-|OTLP HTTP acceptor subdomain </br> `otlp-http.<base_domain>` |Domain name for OpenTelemetry collector `OTLP/HTTP` traffic. Points to the public IP address of your host.|`otlp-http.instana.example.com`|
-|OTLP gRPC acceptor subdomain </br> `otlp-grpc.<base_domain>` |Domain name for OpenTelemetry collector `OTLP/gRPC` traffic. Points to the public IP address of your host.|`otlp-grpc.instana.example.com`|
-|Tenant and unit subdomain </br> `<unit-name>-<tenant-name>.<base_domain>` |Domain name for a unit and its tenant. Points to the public IP address of your host. |`test-marketing.instana.example.com`|
+| Domain                                                                    | Description                                                                                                             | Example name                         |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Base domain </br> `<base_domain>`                                         | The fully qualified domain name (FQDN) that you can use to reach Instana. Points to the public IP address of your host. | `instana.example.com`                |
+| Agent acceptor subdomain </br> `agent-acceptor.<base_domain>`             | Domain name for Instana agent traffic. Points to the public IP address of your host.                                    | `agent-acceptor.instana.example.com` |
+| OTLP HTTP acceptor subdomain </br> `otlp-http.<base_domain>`              | Domain name for OpenTelemetry collector `OTLP/HTTP` traffic. Points to the public IP address of your host.              | `otlp-http.instana.example.com`      |
+| OTLP gRPC acceptor subdomain </br> `otlp-grpc.<base_domain>`              | Domain name for OpenTelemetry collector `OTLP/gRPC` traffic. Points to the public IP address of your host.              | `otlp-grpc.instana.example.com`      |
+| Tenant and unit subdomain </br> `<unit-name>-<tenant-name>.<base_domain>` | Domain name for a unit and its tenant. Points to the public IP address of your host.                                    | `test-marketing.instana.example.com` |
 
 For detailed steps about adding DNS A records, refer to the documentation of your domain registrar.

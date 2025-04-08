@@ -2,3 +2,7 @@ operator:
   securityContext:
     seccompProfile:
       type: "RuntimeDefault"
+image:
+  tag: v1.67.0
+imagePullSecrets:
+  - name: "instana-registry"

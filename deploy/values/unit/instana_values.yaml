@@ -2,7 +2,9 @@ tenantName: "tenant0"
 unitName: "unit0"
 initialAdminUser: admin@instana.local
 initialAdminPassword: "mypass"
-properties: [ ]
-componentConfigs: [ ]
+properties: []
+componentConfigs: []
 priorityClassName: ""
-env: [ ]
+env: []
+coreName: "instana-core"
+coreNamespace: "instana-core"

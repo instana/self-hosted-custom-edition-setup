@@ -60,9 +60,7 @@ install_cert_manager() {
     --set-string acmesolver.image.repository="jetstack/cert-manager-acmesolver" \
     --set-string startupapicheck.image.registry="${REGISTRY_URL}" \
     --set-string startupapicheck.image.repository="jetstack/cert-manager-startupapicheck" \
-    --set crds.enabled=true \
-    --set crds.keep=true \
-    --set-string global.imagePullSecrets[0].name="instana-registry"
+    -f values/cert-manager/instana_values.yaml
 }
 
 uninstall_cert_manager() {
@@ -88,14 +86,11 @@ install_instana_operator() {
 
   helm_upgrade "instana-enterprise-operator" "instana/instana-enterprise-operator" "instana-operator" "${INSTANA_OPERATOR_CHART_VERSION}" \
     --set-string image.registry="${REGISTRY_URL}" \
-    --set-string image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
     --set-string operator.image.registry="${REGISTRY_URL}" \
     --set-string operator.image.repository="infrastructure/instana-enterprise-operator" \
-    --set-string operator.image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
     --set-string webhook.image.registry="${REGISTRY_URL}" \
     --set-string webhook.image.repository="infrastructure/instana-enterprise-operator-webhook" \
-    --set-string webhook.image.tag="${INSTANA_OPERATOR_IMAGE_TAG}" \
-    --set-string imagePullSecrets[0].name=instana-registry
+    -f values/instana-operator/instana_values.yaml
 
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
 }
@@ -145,26 +140,13 @@ install_instana_core() {
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
-    --set-string domains.base="${BASE_DOMAIN}" \
-    --set-string domains.otlpHttp="otlp-http.${BASE_DOMAIN}" \
-    --set-string domains.otlpGrpc="otlp-grpc.${BASE_DOMAIN}" \
+    --set-string baseDomain="${BASE_DOMAIN}" \
+    --set-string acceptors.otlp.http.host="otlp-http.${BASE_DOMAIN}" \
+    --set-string acceptors.otlp.grpc.host="otlp-grpc.${BASE_DOMAIN}" \
     --set-string agentAcceptor.host="${AGENT_ACCEPTOR}" \
     --set-string imageConfig.registry="${REGISTRY_URL}" \
     --set-literal salesKey="${SALES_KEY}" \
     --set-literal repositoryPassword="${DOWNLOAD_KEY}" \
-    --set-literal datastores.beeInstana.password="$(get_secret_password beeinstana-admin instana-beeinstana)" \
-    --set-literal datastores.cassandra.adminPassword="$(get_secret_password cassandra-admin instana-cassandra)" \
-    --set-literal datastores.cassandra.password="$(get_secret_password cassandra-user instana-cassandra)" \
-    --set-literal datastores.clickhouse.adminPassword="$(get_secret_password clickhouse-admin instana-clickhouse)" \
-    --set-literal datastores.clickhouse.password="$(get_secret_password clickhouse-admin instana-clickhouse)" \
-    --set-literal datastores.postgres.adminPassword="$(get_secret_password postgres-admin instana-postgres)" \
-    --set-literal datastores.postgres.password="$(get_secret_password postgres-user instana-postgres)" \
-    --set-literal datastores.elasticsearch.adminPassword="$(get_secret_password elasticsearch-admin instana-elastic)" \
-    --set-literal datastores.elasticsearch.password="$(get_secret_password elasticsearch-user instana-elastic)" \
-    --set-literal datastores.kafka.adminPassword="$(get_secret_password kafka-admin instana-kafka)" \
-    --set-literal datastores.kafka.consumerPassword="$(get_secret_password kafka-user instana-kafka)" \
-    --set-literal datastores.kafka.producerPassword="$(get_secret_password kafka-user instana-kafka)" \
-    --set-string imagePullSecrets[0].name="instana-registry" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-core" "core" "instana-core"
@@ -184,13 +166,9 @@ install_instana_unit() {
   read -ra file_args <<<"$(generate_helm_file_arguments unit)"
 
   helm_upgrade "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}" "instana/instana-unit" "instana-units" "${INSTANA_UNIT_CHART_VERSION}" \
-    --set-string coreName=instana-core \
-    --set-string coreNamespace=instana-core \
     --set licenses="{$license_content}" \
     --set agentKeys="{$AGENT_KEY}" \
     --set-literal downloadKey="$DOWNLOAD_KEY" \
-    --set-literal initialAdminUser="$INSTANA_ADMIN_USER" \
-    --set-literal initialAdminPassword="$INSTANA_ADMIN_PASSWORD" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-units" "unit" "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}"
@@ -218,7 +196,7 @@ uninstall_instana_core() {
   done
 
   helm_uninstall "instana-registry" "instana-core"
-  
+
   if [ "$CLUSTER_TYPE" == "aks" ]; then
     # Check if the Azure storage account secret exists, then delete it
     kubectl get secret azure-storage-account -n instana-core &> /dev/null && kubectl delete secret azure-storage-account -n instana-core

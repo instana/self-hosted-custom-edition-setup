@@ -1,7 +1,27 @@
-domains:
-  base: ""
-  otlpHttp: ""
-  otlpGrpc: ""
+baseDomain: ""
+# agentAcceptorConfig:
+#   host: ""
+#   port: 443
+acceptors:
+  agent:
+    host: ""
+    port: 443
+  otlp:
+    http:
+      host: ""
+      port: 443
+    grpc:
+      host: ""
+      port: 443
+# synthetics:
+#   host: ""
+#   port: 443
+# serverless:
+#   host: ""
+#   port: 443
+# eum:
+#   host: ""
+#   port: 443
 agentAcceptor:
   host: ""
   port: 443
@@ -41,7 +61,8 @@ serviceProviderConfig: ""
 componentConfigs: []
 datastores:
   cassandra:
-    hosts: ["instana-cassandra-service.instana-cassandra.svc"]
+    hosts:
+      - "instana-cassandra-service.instana-cassandra.svc"
     datacenter: cassandra
     replicationFactor: 1
     adminUser: instanaadmin
@@ -49,14 +70,17 @@ datastores:
     user: instana
     password: ""
   clickhouse:
-    hosts: ["chi-clickhouse-local-0-0.instana-clickhouse.svc", "chi-clickhouse-local-0-1.instana-clickhouse.svc"]
+    hosts:
+      - "chi-clickhouse-local-0-0.instana-clickhouse.svc"
+      - "chi-clickhouse-local-0-1.instana-clickhouse.svc"
     clusterName: local
     adminUser: instanaadmin
     adminPassword: ""
     user: instanaadmin
     password: ""
   kafka:
-    hosts: ["kafka-kafka-bootstrap.instana-kafka.svc"]
+    hosts:
+      - "kafka-kafka-bootstrap.instana-kafka.svc"
     saslMechanism: SCRAM-SHA-512
     replicationFactor: 1
     adminUser: instanaadmin
@@ -66,18 +90,21 @@ datastores:
     producerUser: instana
     producerPassword: ""
   elasticsearch:
-    hosts: ["elasticsearch-es-http.instana-elastic.svc"]
+    hosts:
+      - "elasticsearch-es-http.instana-elastic.svc"
     clusterName: instana
     adminUser: instanaadmin
     adminPassword: ""
     user: instana
     password: ""
   beeInstana:
-    hosts: ["aggregators.instana-beeinstana.svc"]
+    hosts:
+      - "aggregators.instana-beeinstana.svc"
     user: instana
     password: ""
   postgres:
-    hosts: ["postgres-rw.instana-postgres.svc"]
+    hosts:
+      - "postgres-rw.instana-postgres.svc"
     adminUser: instanaadmin
     adminPassword: ""
     user: instana
@@ -99,31 +126,31 @@ cert:
   crt: ""
   key: ""
 services:
-- nameSuffix: lb-acceptor
-  ports:
-  - name: https
-    port: 443
-    protocol: TCP
-    targetPort: http-service
-  selectorLabels:
-    app.kubernetes.io/component: acceptor
-    app.kubernetes.io/name: instana
-    instana.io/group: service
-  type: LoadBalancer
-  externalTrafficPolicy: Local
-- nameSuffix: lb-gateway
-  ports:
-  - name: https
-    port: 443
-    protocol: TCP
-    targetPort: https
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: http
-  selectorLabels:
-    app.kubernetes.io/component: gateway
-    app.kubernetes.io/name: instana
-    instana.io/group: service
-  type: LoadBalancer
-  externalTrafficPolicy: Local
+  - nameSuffix: lb-acceptor
+    ports:
+      - name: https
+        port: 443
+        protocol: TCP
+        targetPort: http-service
+    selectorLabels:
+      app.kubernetes.io/component: acceptor
+      app.kubernetes.io/name: instana
+      instana.io/group: service
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+  - nameSuffix: lb-gateway
+    ports:
+      - name: https
+        port: 443
+        protocol: TCP
+        targetPort: https
+      - name: http
+        port: 80
+        protocol: TCP
+        targetPort: http
+    selectorLabels:
+      app.kubernetes.io/component: gateway
+      app.kubernetes.io/name: instana
+      instana.io/group: service
+    type: LoadBalancer
+    externalTrafficPolicy: Local

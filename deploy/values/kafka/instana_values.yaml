@@ -16,3 +16,8 @@ template:
       kafka: 500Mi
       zookeeper: 500Mi
       entityOperator: 500Mi
+image:
+  tag: "0.42.0-kafka-3.7.1_v0.11.0"
+imagePullSecrets:
+  - name: "instana-registry"
+version: 3.7.1

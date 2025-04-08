@@ -19,3 +19,8 @@ nodeSets:
       resources:
         requests:
           storage: 20Gi
+image:
+  tag: "7.17.24_v0.11.0"
+imagePullSecrets:
+  - name: "instana-registry"
+version: 7.17.24

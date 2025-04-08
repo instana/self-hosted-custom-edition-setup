@@ -11,3 +11,8 @@ jvmServerOptions:
 storageClassName: ""
 storage: 100Gi
 memtableFlushWriters: 8
+image:
+  tag: "4.1.4_v0.19.0"
+imagePullSecrets:
+  - name: "instana-registry"
+version: 4.1.4

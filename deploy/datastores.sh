@@ -137,7 +137,7 @@ install_datastore_postgres() {
     )
   fi
 
-  helm_upgrade "cnpg" "instana/cloudnative-pg" "instana-postgres" "${POSTGRES_OPERATOR_CHART_VERSION}" \
+  helm_upgrade "cnpg" "instana/cloudnative-pg" "instana-postgres" "${POSTGRES_OPERATOR_CHART_VERSION}" "${args[@]}" \
      --set-string image.repository="${REGISTRY_URL}/self-hosted-images/3rd-party/operator/cloudnative-pg" \
      -f values/postgres-operator/instana_values.yaml
 

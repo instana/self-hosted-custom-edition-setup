@@ -1,4 +1,4 @@
 image:
-  tag: "2.14.0_v0.14.0"
+  tag: "2.16.1_v0.18.0"
 imagePullSecrets:
   - name: "instana-registry"

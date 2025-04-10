@@ -143,7 +143,7 @@ install_instana_core() {
     --set-string baseDomain="${BASE_DOMAIN}" \
     --set-string acceptors.otlp.http.host="otlp-http.${BASE_DOMAIN}" \
     --set-string acceptors.otlp.grpc.host="otlp-grpc.${BASE_DOMAIN}" \
-    --set-string agentAcceptor.host="${AGENT_ACCEPTOR}" \
+    --set-string acceptors.agent.host="${AGENT_ACCEPTOR}" \
     --set-string imageConfig.registry="${REGISTRY_URL}" \
     --set-literal salesKey="${SALES_KEY}" \
     --set-literal repositoryPassword="${DOWNLOAD_KEY}" \

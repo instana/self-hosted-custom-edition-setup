@@ -7,6 +7,6 @@ clickhouse:
 keeper:
   replicas: 3
 image:
-  tag: "24.3.12.75-5-lts-ibm"
+  tag: "24.8.12.28-5-lts-ibm"
 imagePullSecrets:
   - name: "instana-registry"

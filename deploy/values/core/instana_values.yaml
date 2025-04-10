@@ -22,9 +22,31 @@ acceptors:
 # eum:
 #   host: ""
 #   port: 443
-agentAcceptor:
-  host: ""
-  port: 443
+gatewayConfig:
+  # -- Enable gateway-controller with gateway-v2
+  enabled: false
+  gateway:
+    # -- Image config for the gateway image
+    imageConfig: {}
+    # -- Number of gateway replicas
+    replicas: 1
+    # -- Log level for gateway
+    logLevel: error
+    # -- Listener IP for gateway admin endpoint
+    adminListener: 127.0.0.1
+    # -- Circuit breaker configuration for Gateway acceptor ingress traffic.
+    circuitBreakers: {}
+    # -- Deployment configuration for the gateway
+    config: {}
+  controller:
+    # -- Image config for the gateway image
+    imageConfig: {}
+    # -- Number of gateway replicas
+    replicas: 1
+    # -- List of TLS cipher suites to use
+    tlsCipherSuites: []
+    # -- Deployment configuration for the gateway-controller
+    config: {}
 tenantUnits:
   - unitName: unit0
     tenantName: tenant0

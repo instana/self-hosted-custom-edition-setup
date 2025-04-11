@@ -122,9 +122,6 @@ Before running the installation script, ensure the following configurations are 
   INSTANA_UNIT_NAME=unit0
   INSTANA_TENANT_NAME=tenant0
 
-  INSTANA_ADMIN_USER=admin@instana.local
-  INSTANA_ADMIN_PASSWORD=mypass
-
   # Registry configuration environment variables are needed only if a custom registry is used.
   REGISTRY_URL=<registry url>
   REGISTRY_USERNAME=<registry username>
@@ -145,6 +142,15 @@ Before running the installation script, ensure the following configurations are 
 ## Necessary Custom Values
 
 Make sure to customize these values in the respective value files.
+> [!NOTE]
+> To configure custom values for components, update file `instana_values.yaml` or create `custom_values.yaml` under respective component.
+
+**_For Example_**: To configure Instana tenant/unit admin and password, update `custom-edition/deploy/values/unit/instana_values.yaml` or create `custom_values.yaml` under `custom-edition/deploy/values/unit` to use custom values.
+```yaml
+initialAdminUser: admin@instana.local
+initialAdminPassword: "mypass"
+```
+
 
 ### BeeInstana
 

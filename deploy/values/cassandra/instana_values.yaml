@@ -12,7 +12,7 @@ storageClassName: ""
 storage: 100Gi
 memtableFlushWriters: 8
 image:
-  tag: "4.1.4_v0.19.0"
+  tag: "4.1.8_v0.17.2"
 imagePullSecrets:
   - name: "instana-registry"
-version: 4.1.4
+version: 4.1.8

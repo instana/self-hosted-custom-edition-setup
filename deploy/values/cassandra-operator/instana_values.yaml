@@ -1,5 +1,5 @@
 image:
-  tag: "1.22.4_v0.17.0"
+  tag: "1.22.4_v0.21.0"
 imagePullSecrets:
   - name: "instana-registry"
 appVersion: "1.18.2"

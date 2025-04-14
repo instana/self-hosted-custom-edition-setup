@@ -98,7 +98,7 @@ datastores:
     clusterName: local
     adminUser: instanaadmin
     adminPassword: ""
-    user: instanaadmin
+    user: instana
     password: ""
   kafka:
     hosts:

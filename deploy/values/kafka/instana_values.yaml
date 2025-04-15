@@ -20,4 +20,4 @@ image:
   tag: "0.45.0-kafka-3.8.1_v0.15.0"
 imagePullSecrets:
   - name: "instana-registry"
-version: 3.7.1
+version: 3.8.1

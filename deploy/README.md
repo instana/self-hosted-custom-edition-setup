@@ -15,6 +15,7 @@ Before installation, ensure the following prerequisites are met:
 | 2   | A default storage class is set | Required for successful data store installations   |
 | 3   | Kubernetes version > 1.25      | Instana requires Kubernetes version 1.25 or higher |
 | 4   | OCP version > 4.13             | Required to deploy Instana on OpenShift            |
+| 5   | yq                             | Required to parse yaml            |
 
 - ### Helm
 
@@ -71,6 +72,22 @@ Before installation, ensure the following prerequisites are met:
 
   ```bash
   oc version
+  ```
+- ### Install yq
+
+  yq is a command-line tool for reading and writing YAML files
+
+  Mac (Homebrew):
+  ```bash
+  brew install yq
+  ```
+  Ubuntu / Debian:
+  ```bash
+  sudo snap install yq
+  ```
+  Check version:
+  ```bash
+  yq --version
   ```
 
 - ### How to access the code?
@@ -417,6 +434,74 @@ For Red Hat OpenShift, those services are exposed via `route`, and for Kubernete
 in `instana-core` namespace.
 
 ### DNS settings
+
+All the DNS related changes needs to be specified on the core/instana_values.yaml or core/custom_values.yaml
+
+- <u> Agent Acceptor </u>
+The acceptor is the endpoint that Instana agents need to reach to deliver traces or metrics to the Instana backend. The acceptor is usually a subdomain for the baseDomain that is configured previously in the Basic configuration section.
+  ```yaml
+  acceptors:
+    agent:
+      host: "agent.self-hosted-instana.instana.rocks"
+  ```
+
+- <u>Gateway configuration</u>
+  To enable gateway configuration , modify the below on core/custom_values.yaml
+  ```yaml
+  gatewayConfig:
+    enabled: true
+  ```
+
+  You can configure the hosts and ports for the following types of ingress traffic:
+  ```Instana Agent
+  Synthetics
+  Serverless
+  OTLP (HTTP/gRPC)
+  EUM
+  ```
+  - The following examples show how to configure your acceptor traffic ingestion based on different requirements:
+  1. **Use subdomains with a single port (443)** This approach allows you to expose only one port (443) while using subdomains to differentiate traffic for each acceptor.
+      ```yaml
+      spec:
+        acceptors:
+          agent:
+            host: ingress.<instana.example.com>
+            port: 443
+          otlp:
+            http:
+              host: otlp-http.<instana.example.com>
+              port: 443
+            grpc:
+              host: otlp-grpc.<instana.example.com>
+              port: 443
+          eum:
+            host: eum.<instana.example.com>
+            port: 443
+          synthetics:
+            host: synthetics.<instana.example.com>
+            port: 443
+          serverless:
+            host: serverless.<instana.example.com>
+            port: 443
+      ```
+  2. **Use a single domain with different ports** This approach allows you to use a single domain while differentiating acceptor traffic based on port numbers.
+      ```yaml
+      spec:
+        acceptors:
+          agent:
+            port: 1444
+          otlp:
+            http:
+              port: 4318
+            grpc:
+              port: 4317
+          eum:
+            port: 1555
+          synthetics:
+            port: 1666
+          serverless:
+            port: 1777
+      ```
 
 Make sure you have a domain name and a DNS zone for your Instana environment. Then, add DNS A records in the zone for the
 following domains:

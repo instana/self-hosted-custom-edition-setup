@@ -30,8 +30,12 @@ validate_config() {
   verify_non_empty "SALES_KEY" "$SALES_KEY"
   verify_non_empty "INSTANA_UNIT_NAME" "$INSTANA_UNIT_NAME"
   verify_non_empty "INSTANA_TENANT_NAME" "$INSTANA_TENANT_NAME"
-  verify_non_empty "BASE_DOMAIN" "$BASE_DOMAIN"
-  verify_non_empty "AGENT_ACCEPTOR" "$AGENT_ACCEPTOR"
+    # Check YAML config keys
+  local yaml_file="values/core/custom_values.yaml"
+  [ ! -f "$yaml_file" ] && yaml_file="values/core/instana_values.yaml"
+  info "Validating YAML config file: $yaml_file"
+  verify_yaml_key_or_host_port_non_empty "$yaml_file" "baseDomain" "baseDomain"
+  verify_yaml_key_or_host_port_non_empty "$yaml_file" "acceptors.agent" "agent acceptor"
 }
 
 precheck() {
@@ -95,13 +99,22 @@ install_instana_operator() {
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
 }
 
+yaml_file="values/core/custom_values.yaml"
+[ ! -f "$yaml_file" ] && yaml_file="values/core/instana_values.yaml"
+
+BASE_DOMAIN=$(yq e '.baseDomain' "$yaml_file")
+AGENT_ACCEPTOR=$(yq e '.acceptors.agent.host' "$yaml_file")
 
 create_instana_routes() {
   if [ "$CLUSTER_TYPE" == "ocp" ]; then
     info "Creating routes..."
     oc create route passthrough ui-client-tenant --hostname="${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}.${BASE_DOMAIN}" --service=gateway --port=https -n instana-core
     oc create route passthrough ui-client-ssl --hostname="${BASE_DOMAIN}" --service=gateway --port=https -n instana-core
-    oc create route passthrough acceptor --hostname="${AGENT_ACCEPTOR}" --service=acceptor --port=http-service -n instana-core
+    if [ -n "$AGENT_ACCEPTOR" ]; then
+      oc create route passthrough acceptor --hostname="${AGENT_ACCEPTOR}" --service=acceptor --port=http-service -n instana-core
+    else
+      echo "AGENT_ACCEPTOR is null or empty, skipping route creation for acceptor - applies to gateway"
+    fi
   fi
 }
 
@@ -140,10 +153,6 @@ install_instana_core() {
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
-    --set-string baseDomain="${BASE_DOMAIN}" \
-    --set-string acceptors.otlp.http.host="otlp-http.${BASE_DOMAIN}" \
-    --set-string acceptors.otlp.grpc.host="otlp-grpc.${BASE_DOMAIN}" \
-    --set-string acceptors.agent.host="${AGENT_ACCEPTOR}" \
     --set-string imageConfig.registry="${REGISTRY_URL}" \
     --set-literal salesKey="${SALES_KEY}" \
     --set-literal repositoryPassword="${DOWNLOAD_KEY}" \

@@ -113,8 +113,6 @@ install_datastore_kafka() {
     --set-string topicOperator.image.repository="self-hosted-images/3rd-party/operator" \
     --set-string userOperator.image.registry="${REGISTRY_URL}" \
     --set-string userOperator.image.repository="self-hosted-images/3rd-party/operator" \
-    --set-string tlsSidecarEntityOperator.image.registry="${REGISTRY_URL}" \
-    --set-string tlsSidecarEntityOperator.image.repository="self-hosted-images/3rd-party/datastore" \
     -f values/kafka-operator/instana_values.yaml
 
   local file_args

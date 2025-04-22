@@ -64,6 +64,32 @@ verify_non_empty() {
   fi
 }
 
+verify_yaml_key_or_host_port_non_empty() {
+  local file="$1"
+  local key_or_prefix="$2"
+  local label="$3"
+
+  if [ "$key_or_prefix" == "baseDomain" ]; then
+    # Check for baseDomain key directly
+    local base_domain_value
+    base_domain_value=$(yq e ".${key_or_prefix}" "$file" 2>/dev/null)
+
+    if [ -z "$base_domain_value" ] || [ "$base_domain_value" = "null" ]; then
+      error "$label (baseDomain) must not be empty in $file."
+    fi
+  else
+    # For other keys, check for both host and port
+    local host_value port_value
+    host_value=$(yq e ".${key_or_prefix}.host" "$file" 2>/dev/null)
+    port_value=$(yq e ".${key_or_prefix}.port" "$file" 2>/dev/null)
+
+    if { [ -z "$host_value" ] || [ "$host_value" = "null" ]; } && \
+       { [ -z "$port_value" ] || [ "$port_value" = "null" ]; }; then
+      error "$label must have at least one of 'host' or 'port' defined in $file (key prefix: $key_or_prefix)."
+    fi
+  fi
+}
+
 get_secret_password() {
   kubectl get secret "$1" -n "$2" --template='{{index .data.password | base64decode}}'
 }

@@ -11,7 +11,3 @@ userOperator:
   image:
     tag: 0.45.0_v0.15.0
     name: "strimzi"
-tlsSidecarEntityOperator:
-  image:
-    tag: 0.45.0-kafka-3.8.1_v0.15.0
-    name: "kafka"

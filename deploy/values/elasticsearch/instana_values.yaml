@@ -20,7 +20,7 @@ nodeSets:
         requests:
           storage: 20Gi
 image:
-  tag: "8.15.3_v0.15.0"
+  tag: "8.17.2_v0.16.1"
 imagePullSecrets:
   - name: "instana-registry"
-version: 8.15.3
+version: 8.17.2

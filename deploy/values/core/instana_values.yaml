@@ -35,7 +35,11 @@ gatewayConfig:
     # -- Listener IP for gateway admin endpoint
     adminListener: 127.0.0.1
     # -- Circuit breaker configuration for Gateway acceptor ingress traffic.
-    circuitBreakers: {}
+    circuitBreakers:
+      maxConnections: 50000
+      maxPendingRequests: 50000
+      maxRequests: 50000
+      maxRetries: 4
     # -- Deployment configuration for the gateway
     config: {}
   controller:

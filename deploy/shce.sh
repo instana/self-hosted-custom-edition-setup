@@ -104,27 +104,63 @@ yaml_file="values/core/custom_values.yaml"
 
 BASE_DOMAIN=$(yq e '.baseDomain' "$yaml_file")
 AGENT_ACCEPTOR=$(yq e '.acceptors.agent.host' "$yaml_file")
+AGENT_ACCEPTOR=$(yq e '.acceptors.agent.host' "$yaml_file")
+IS_GATEWAY_V2_ENABLED=$(yq e '.gatewayConfig.enabled' "$yaml_file")
 
 create_instana_routes() {
-  if [ "$CLUSTER_TYPE" == "ocp" ]; then
-    info "Creating routes..."
-    oc create route passthrough ui-client-tenant --hostname="${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}.${BASE_DOMAIN}" --service=gateway --port=https -n instana-core
-    oc create route passthrough ui-client-ssl --hostname="${BASE_DOMAIN}" --service=gateway --port=https -n instana-core
-    if [ -n "$AGENT_ACCEPTOR" ]; then
-      oc create route passthrough acceptor --hostname="${AGENT_ACCEPTOR}" --service=acceptor --port=http-service -n instana-core
-    else
-      echo "AGENT_ACCEPTOR is null or empty, skipping route creation for acceptor - applies to gateway"
+  if [ "$CLUSTER_TYPE" != "ocp" ]; then
+    return
+  fi
+
+  info "Creating routes..."
+
+  local GATEWAY_SERVICE="gateway"
+  if [[ "$IS_GATEWAY_V2_ENABLED" == "true" ]]; then
+    GATEWAY_SERVICE="gateway-v2"
+  fi
+
+  # create UI routes
+  oc create route passthrough ui-client-tenant \
+    --hostname="${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}.${BASE_DOMAIN}" \
+    --service="$GATEWAY_SERVICE" \
+    --port=https \
+    -n instana-core
+
+  oc create route passthrough ui-client-ssl \
+    --hostname="${BASE_DOMAIN}" \
+    --service="$GATEWAY_SERVICE" \
+    --port=https \
+    -n instana-core
+
+  # optionally create agent acceptor route
+  if [ -n "$AGENT_ACCEPTOR" ]; then
+    local ACCEPTOR_SERVICE_NAME="acceptor"
+    local ACCEPTOR_SERVICE_PORT="http-service"
+    if [[ "$IS_GATEWAY_V2_ENABLED" == "true" ]]; then
+      # if gateway-v2 is enabled send agent traffic to gateway-v2
+      ACCEPTOR_SERVICE_NAME="gateway-v2"
+      ACCEPTOR_SERVICE_PORT="https"
     fi
+
+    oc create route passthrough acceptor \
+      --hostname="${AGENT_ACCEPTOR}" \
+      --service="$ACCEPTOR_SERVICE_NAME" \
+      --port="$ACCEPTOR_SERVICE_PORT" \
+      -n instana-core
+  else
+    info "AGENT_ACCEPTOR not set, skipping acceptor route."
   fi
 }
 
 delete_instana_routes() {
-  if [ "$CLUSTER_TYPE" == "ocp" ]; then
-    info "Delete routes..."
-    oc delete route ui-client-tenant --ignore-not-found -n instana-core
-    oc delete route ui-client-ssl --ignore-not-found -n instana-core
-    oc delete route acceptor --ignore-not-found -n instana-core
+  if [ "$CLUSTER_TYPE" != "ocp" ]; then
+    return
   fi
+
+  info "Delete routes..."
+  oc delete route ui-client-tenant --ignore-not-found -n instana-core
+  oc delete route ui-client-ssl --ignore-not-found -n instana-core
+  oc delete route acceptor --ignore-not-found -n instana-core
 }
 
 install_instana_core() {
@@ -154,6 +190,8 @@ install_instana_core() {
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
     --set-string imageConfig.registry="${REGISTRY_URL}" \
+    --set-string gatewayConfig.gateway.imageConfig.registry="${REGISTRY_URL}" \
+    --set-string gatewayConfig.controller.imageConfig.registry="${REGISTRY_URL}" \
     --set-literal salesKey="${SALES_KEY}" \
     --set-literal repositoryPassword="${DOWNLOAD_KEY}" \
     "${file_args[@]}"

@@ -190,8 +190,6 @@ install_instana_core() {
 
   helm_upgrade "instana-core" "instana/instana-core" "instana-core" "${INSTANA_CORE_CHART_VERSION}" \
     --set-string imageConfig.registry="${REGISTRY_URL}" \
-    --set-string gatewayConfig.gateway.imageConfig.registry="${REGISTRY_URL}" \
-    --set-string gatewayConfig.controller.imageConfig.registry="${REGISTRY_URL}" \
     --set-literal salesKey="${SALES_KEY}" \
     --set-literal repositoryPassword="${DOWNLOAD_KEY}" \
     "${file_args[@]}"

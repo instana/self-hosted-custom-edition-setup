@@ -93,11 +93,11 @@ Before installation, ensure the following prerequisites are met:
 - ### How to access the code?
   Clone the repository
   ```bash
-  git clone https://github.ibm.com/instana/self-hosted-utilities.git
+  git clone https://github.ibm.com/instana/shce-automation-script.git
   ```
   Navigate to the Project Directory
   ```bash
-  cd /self-hosted-utilities/custom-edition/deploy
+  cd /shce-automation-script/deploy
   ```
 
 
@@ -105,7 +105,7 @@ Before installation, ensure the following prerequisites are met:
 
 Before running the installation script, ensure the following configurations are set.
 > [!NOTE]
-  > All the below configuration and steps should be added and executed within the project directory (custom-edition/deploy) .
+  > All the below configuration and steps should be added and executed within the project directory (deploy/) .
 
 - ### CLUSTER_TYPE Environment Variable
 
@@ -162,7 +162,7 @@ Make sure to customize these values in the respective value files.
 > [!NOTE]
 > To configure custom values for components, update file `instana_values.yaml` or create `custom_values.yaml` under respective component.
 
-**_For Example_**: To configure Instana tenant/unit admin and password, update `custom-edition/deploy/values/unit/instana_values.yaml` or create `custom_values.yaml` under `custom-edition/deploy/values/unit` to use custom values.
+**_For Example_**: To configure Instana tenant/unit admin and password, update `deploy/values/unit/instana_values.yaml` or create `custom_values.yaml` under `deploy/values/unit` to use custom values.
 ```yaml
 initialAdminUser: admin@instana.local
 initialAdminPassword: "mypass"

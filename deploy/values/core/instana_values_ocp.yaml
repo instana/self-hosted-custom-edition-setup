@@ -1,6 +1,4 @@
 storageConfigs:
-  rawSpans:
-    pvcConfig: {}
-  eumSourceMaps:
-    pvcConfig: {}
+  rawSpans: {}
+  eumSourceMaps: {}
 services: []

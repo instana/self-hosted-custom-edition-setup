@@ -180,6 +180,21 @@ aggregator:
       storageClass: "your-storage-class"
 ```
 
+### Instana Enterprise Operator
+
+_Example of_ configuring the Instana Enterprise Operator
+
+In `values/instana-operator/custom_values.yaml`, configure image tag.
+
+```yaml
+operator:
+  image:
+    tag: 1.3.0
+webhook:
+  image:
+    tag: 1.3.0
+```
+
 ### Core
 
 #### Configure Instana Backend Versions

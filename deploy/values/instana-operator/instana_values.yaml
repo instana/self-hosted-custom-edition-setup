@@ -1,8 +1,2 @@
-operator:
-  image:
-    tag: 1.3.0
-webhook:
-  image:
-    tag: 1.3.0
 imagePullSecrets:
   - name: "instana-registry"

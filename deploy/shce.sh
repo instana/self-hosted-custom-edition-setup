@@ -85,6 +85,9 @@ install_instana_registry() {
 install_instana_operator() {
   info "Installing Instana operator..."
 
+  local file_args
+  read -ra file_args <<<"$(generate_helm_file_arguments instana-operator)"
+
   create_namespace_if_not_exist instana-operator
   install_instana_registry instana-operator
 
@@ -94,7 +97,7 @@ install_instana_operator() {
     --set-string operator.image.repository="infrastructure/instana-enterprise-operator" \
     --set-string webhook.image.registry="${REGISTRY_URL}" \
     --set-string webhook.image.repository="infrastructure/instana-enterprise-operator-webhook" \
-    -f values/instana-operator/instana_values.yaml
+    "${file_args[@]}"
 
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
 }

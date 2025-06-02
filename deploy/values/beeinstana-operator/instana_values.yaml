@@ -3,6 +3,6 @@ operator:
     seccompProfile:
       type: "RuntimeDefault"
 image:
-  tag: v1.74.0
+  tag: v1.84.0
 imagePullSecrets:
   - name: "instana-registry"

@@ -1,13 +1,13 @@
 image:
-  tag: 0.45.0_v0.15.0
+  tag: 0.45.0_v0.17.0
   name: "strimzi"
   imagePullSecrets:
     - name: "instana-registry"
 topicOperator:
   image:
-    tag: 0.45.0_v0.15.0
+    tag: 0.45.0_v0.17.0
     name: "strimzi"
 userOperator:
   image:
-    tag: 0.45.0_v0.15.0
+    tag: 0.45.0_v0.17.0
     name: "strimzi"

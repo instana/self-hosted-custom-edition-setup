@@ -24,7 +24,7 @@ acceptors:
 #   port: 443
 gatewayConfig:
   # -- Enable gateway-controller with gateway-v2
-  enabled: false
+  enabled: true
   gateway:
     # -- Image config for the gateway image
     imageConfig: {}

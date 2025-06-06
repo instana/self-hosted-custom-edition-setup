@@ -119,8 +119,7 @@ Before running the installation script, ensure the following configurations are 
 
 - ### config.env File
 
-  Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY`
-  , `BASE_DOMAIN`, and `AGENT_ACCEPTOR` information.
+  Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY` and `CLUSTER_TYPE`
 
   > [!NOTE]
   > If `AGENT_KEY` is not configured, defaults to `DOWNLOAD_KEY`.
@@ -132,9 +131,6 @@ Before running the installation script, ensure the following configurations are 
   DOWNLOAD_KEY=
   AGENT_KEY=
   CLUSTER_TYPE=
-
-  BASE_DOMAIN=<base-domain>
-  AGENT_ACCEPTOR=agent-acceptor.<base-domain>
 
   INSTANA_UNIT_NAME=unit0
   INSTANA_TENANT_NAME=tenant0
@@ -452,6 +448,12 @@ in `instana-core` namespace.
 
 All the DNS related changes needs to be specified on the core/instana_values.yaml or core/custom_values.yaml
 
+- <u> Base Domain </u>
+Base domain is a mandatory field , which will represent the DNS for the instana application
+  ```yaml
+  baseDomain: "instana.apps.instanta-fips-test-01.cp.fyre.ibm.com"
+  ```
+
 - <u> Agent Acceptor </u>
 The acceptor is the endpoint that Instana agents need to reach to deliver traces or metrics to the Instana backend. The acceptor is usually a subdomain for the baseDomain that is configured previously in the Basic configuration section.
   ```yaml
@@ -517,6 +519,7 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
           serverless:
             port: 1777
       ```
+
 
 Make sure you have a domain name and a DNS zone for your Instana environment. Then, add DNS A records in the zone for the
 following domains:

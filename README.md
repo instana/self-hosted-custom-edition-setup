@@ -110,7 +110,7 @@ Before running the installation script, ensure the following configurations are 
 - ### CLUSTER_TYPE Environment Variable
 
   Set the `CLUSTER_TYPE` environment variable based on your cluster type (`ocp`, `eks`, `aks`, `gke`).
-  For ARO and ROSA set the `CLUSTER_TYPE` environment variable as `ocp`.
+  For ARO and ROSA set the `CLUSTER_TYPE` environment variable to `ocp`.
   For more details on setting up ARO and ROSA infrastructure and setup follow [ARO&ROSA](/docs/ARO&ROSA.md)
 
   ```bash
@@ -533,3 +533,6 @@ following domains:
 | Tenant and unit subdomain </br> `<unit-name>-<tenant-name>.<base_domain>` | Domain name for a unit and its tenant. Points to the public IP address of your host.                                    | `test-marketing.instana.example.com` |
 
 For detailed steps about adding DNS A records, refer to the documentation of your domain registrar.
+
+> [!NOTE]
+> For all further custom configurations, consult the public [doc](https://www.ibm.com/docs/en/instana-observability/current?topic=backend-installing-custom-edition)

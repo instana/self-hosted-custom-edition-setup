@@ -18,4 +18,3 @@ allowHostPID: true
 readOnlyRootFilesystem: false
 users:
   - system:serviceaccount:instana-cassandra:cass-operator
-  - system:serviceaccount:instana-cassandra:default

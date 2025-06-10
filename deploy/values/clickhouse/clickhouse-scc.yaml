@@ -19,4 +19,3 @@ readOnlyRootFilesystem: false
 users:
   - system:serviceaccount:instana-clickhouse:clickhouse-operator
   - system:serviceaccount:instana-clickhouse:clickhouse-operator-ibm-clickhouse-operator
-  - system:serviceaccount:instana-clickhouse:default

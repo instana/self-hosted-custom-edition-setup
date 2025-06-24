@@ -113,10 +113,6 @@ Before running the installation script, ensure the following configurations are 
   For ARO and ROSA set the `CLUSTER_TYPE` environment variable to `ocp`.
   For more details on setting up ARO and ROSA infrastructure and setup follow [ARO&ROSA](/docs/ARO&ROSA.md)
 
-  ```bash
-  export CLUSTER_TYPE=ocp
-  ```
-
 - ### config.env File
 
   Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY` and `CLUSTER_TYPE`
@@ -185,10 +181,10 @@ In `values/instana-operator/custom_values.yaml`, configure image tag.
 ```yaml
 operator:
   image:
-    tag: 1.3.0
+    tag: 1.4.0
 webhook:
   image:
-    tag: 1.3.0
+    tag: 1.4.0
 ```
 
 ### Core
@@ -204,7 +200,7 @@ In `values/core/custom_values.yaml`, configure the `imageConfig`.
 
 ```yaml
 imageConfig:
-  tag: 3.289.617.0
+  tag: 3.295.358-0
   # registry: artifact-public.instana.io
   # repository: backend
 ```
@@ -344,6 +340,7 @@ featureFlags:
   - name: feature.internal.monitoring.unit
     enabled: true
 ```
+For additional feature flags visit the [link](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-enabling-optional-features)
 
 > [!NOTE]
 > Before enabling Synthetic monitoring, configure storage configurations in the storageConfigs section in the Core spec (`synthetics`, `syntheticsKeystore`)
@@ -463,11 +460,32 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
   ```
 
 - <u>Gateway configuration</u>
-  To enable gateway configuration , modify the below on core/custom_values.yaml
+  To disable gateway configuration , modify the below on core/custom_values.yaml. By default its enabled
+  ```yaml
+  gatewayConfig:
+    enabled: false
+  ```
+  Creating LoadBalancer services automatically. Your Custom Edition environment supports automatically creating the Kubernetes LoadBalancer services for the gateway-v2 component. You need not create the LoadBalancer services manually.
+
+  ```yaml
+  gatewayConfig:
+    gateway:
+      loadBalancerConfig:
+        enabled: true
+  ```
+  > [!NOTE]
+  > For vanilla Openshift cluster, you dont need to enable the loadBalancerConfig. For other Kubernetes flavours like ARO , ROSA , AKS , GKE & AWS you can enable this . Also if you have your own public ip you can add that under the loadBalancerConfig
   ```yaml
   gatewayConfig:
     enabled: true
-  ```
+    gateway:
+      loadBalancerConfig:
+        enabled: true # enables automatic loadbalancer creation
+        ip: <your public IP>
+        externalTrafficPolicy: Local # default
+        annotations:
+          your-annotation-key: your-annotation-value
+  ````
 
   You can configure the hosts and ports for the following types of ingress traffic:
   ```Instana Agent
@@ -519,7 +537,13 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
           serverless:
             port: 1777
       ```
-
+- <u>Enabling support for single ingress domain</u>
+  Custom Edition environment can route traffic for all tenants through a single base domain . After enabling this behaviour, the URL for accessing the UI of all your Instana tenants is served at basedomain.com/tenantname/unitname instead of unitname-tenantname.basedomain.com.
+  ```yaml
+  properties:
+  - name: config.url.format.pathStyle
+    value: "true"
+  ```
 
 Make sure you have a domain name and a DNS zone for your Instana environment. Then, add DNS A records in the zone for the
 following domains:
@@ -536,3 +560,18 @@ For detailed steps about adding DNS A records, refer to the documentation of you
 
 > [!NOTE]
 > For all further custom configurations, consult the public [doc](https://www.ibm.com/docs/en/instana-observability/current?topic=backend-installing-custom-edition)
+
+## Remove Instana
+To delete all data stores and the Instana backend:
+
+```bash
+./shce.sh delete
+```
+### Delete Specific Data Stores
+
+To delete individual data stores, such as Kafka or Postgres:
+
+```bash
+./shce.sh datastores delete kafka
+./shce.sh datastores delete postgres
+```

@@ -102,13 +102,13 @@ install_instana_operator() {
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
 }
 
-custom_yaml="values/core/custom_values.yaml"
-default_yaml="values/core/instana_values.yaml"
-
-# Function to read a value, prioritize custom YAML, fallback to default
 get_yaml_value() {
-  local key="$1"
+  local component="$1"
+  local key="$2"
   local value
+
+  local custom_yaml="values/${component}/custom_values.yaml"
+  local default_yaml="values/${component}/instana_values.yaml"
 
   if [ -f "$custom_yaml" ]; then
     value=$(yq e "$key" "$custom_yaml")
@@ -121,9 +121,10 @@ get_yaml_value() {
   echo "$value"
 }
 
-BASE_DOMAIN=$(get_yaml_value '.baseDomain')
-AGENT_ACCEPTOR=$(get_yaml_value '.acceptors.agent.host')
-IS_GATEWAY_V2_ENABLED=$(get_yaml_value '.gatewayConfig.enabled')
+BASE_DOMAIN=$(get_yaml_value "core" ".baseDomain")
+AGENT_ACCEPTOR=$(get_yaml_value  "core" ".acceptors.agent.host")
+IS_GATEWAY_V2_ENABLED=$(get_yaml_value "core" ".gatewayConfig.enabled")
+INSTANA_ADMIN_USER=$(get_yaml_value "unit" ".initialAdminUser")
 
 create_instana_routes() {
   if [ "$CLUSTER_TYPE" != "ocp" ]; then

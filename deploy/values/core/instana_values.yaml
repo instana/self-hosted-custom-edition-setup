@@ -7,21 +7,11 @@ acceptors:
     host: ""
     port: 443
   otlp:
-    http:
-      host: ""
-      port: 443
-    grpc:
-      host: ""
-      port: 443
-# synthetics:
-#   host: ""
-#   port: 443
-# serverless:
-#   host: ""
-#   port: 443
-# eum:
-#   host: ""
-#   port: 443
+    http: {}
+    grpc: {}
+  synthetics: {}
+  serverless: {}
+  eum: {}
 gatewayConfig:
   # -- Enable gateway-controller with gateway-v2
   enabled: true

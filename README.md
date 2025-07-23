@@ -33,7 +33,7 @@ Before installation, ensure the following prerequisites are met:
   To verify the default storage class:
 
   ```bash
-  kubectl get storageclass -o=jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}'
+  kubectl get storageclass -o=jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}{"\n"}'
   ```
 
   If no default is set, run:

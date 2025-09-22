@@ -1,5 +1,5 @@
 operator:
   image:
-    tag: v1.2.5
+    tag: v1.2.10
 imagePullSecrets:
   - name: "instana-registry"

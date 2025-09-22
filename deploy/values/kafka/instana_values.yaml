@@ -17,7 +17,7 @@ template:
       controller: 500Mi
       entityOperator: 500Mi
 image:
-  tag: "0.47.0-kafka-3.9.1_v0.23.0"
+  tag: "0.47.0-kafka-3.9.1_v0.24.0"
 imagePullSecrets:
   - name: "instana-registry"
 version: 3.9.1

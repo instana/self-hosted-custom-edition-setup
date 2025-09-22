@@ -6,6 +6,6 @@ resources:
     cpu: 500m
     memory: 1Gi
 image:
-  tag: "15_v0.18.0"
+  tag: "15_v0.29.0"
 imagePullSecrets:
   - name: "instana-registry"

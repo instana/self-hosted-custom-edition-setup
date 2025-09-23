@@ -1,4 +1,2 @@
-storageConfigs:
-  rawSpans: {}
-  eumSourceMaps: {}
+storageConfigs: {}
 services: []

@@ -152,9 +152,9 @@ Before running the installation script, ensure the following configurations are 
 
 Make sure to customize these values in the respective value files.
 > [!NOTE]
-> To configure custom values for components, update file `instana_values.yaml` or create `custom_values.yaml` under respective component.
+> To configure custom values for components, update file `instana-values.yaml` or create `custom-values.yaml` under respective component.
 
-**_For Example_**: To configure Instana tenant/unit admin and password, update `deploy/values/unit/instana_values.yaml` or create `custom_values.yaml` under `deploy/values/unit` to use custom values.
+**_For Example_**: To configure Instana tenant/unit admin and password, update `deploy/values/unit/instana-values.yaml` or create `custom-values.yaml` under `deploy/values/unit` to use custom values.
 ```yaml
 initialAdminUser: admin@instana.local
 initialAdminPassword: "mypass"
@@ -163,7 +163,7 @@ initialAdminPassword: "mypass"
 
 ### BeeInstana
 
-In `values/beeinstana/custom_values.yaml`, set the `aggregator.volumes.live.storageClass` to your default storage class:
+In `values/beeinstana/custom-values.yaml`, set the `aggregator.volumes.live.storageClass` to your default storage class:
 
 ```yaml
 aggregator:
@@ -176,7 +176,7 @@ aggregator:
 
 _Example of_ configuring the Instana Enterprise Operator
 
-In `values/instana-operator/custom_values.yaml`, configure image tag.
+In `values/instana-operator/custom-values.yaml`, configure image tag.
 
 ```yaml
 operator:
@@ -196,7 +196,7 @@ webhook:
 
 _Example of_ configuring the Instana backend release:
 
-In `values/core/custom_values.yaml`, configure the `imageConfig`.
+In `values/core/custom-values.yaml`, configure the `imageConfig`.
 
 ```yaml
 imageConfig:
@@ -209,7 +209,7 @@ imageConfig:
 
 _Example of_ `emailConfig`:
 
-In `values/core/custom_values.yaml`, update the SMTP host and storage configurations as per the deployment environment:
+In `values/core/custom-values.yaml`, update the SMTP host and storage configurations as per the deployment environment:
 
 ```yaml
 emailConfig:
@@ -428,7 +428,7 @@ To install individual data stores, such as Kafka or Postgres:
 
 ### Instana backend configurations
 
-At any time during or after the Instana backend installation, you can update the Instana Core configuration values in `values/core/custom_values.yaml` and `values/unit/custom_values.yaml`. Run the following command to apply the backend configurations:
+At any time during or after the Instana backend installation, you can update the Instana Core configuration values in `values/core/custom-values.yaml` and `values/unit/custom-values.yaml`. Run the following command to apply the backend configurations:
 
 ```bash
 ./shce.sh backend apply
@@ -443,7 +443,7 @@ in `instana-core` namespace.
 
 ### DNS settings
 
-All the DNS related changes needs to be specified on the core/instana_values.yaml or core/custom_values.yaml
+All the DNS related changes needs to be specified on the core/instana-values.yaml or core/custom-values.yaml
 
 - <u> Base Domain </u>
 Base domain is a mandatory field , which will represent the DNS for the instana application
@@ -460,7 +460,7 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
   ```
 
 - <u>Gateway configuration</u>
-  To disable gateway configuration , modify the below on core/custom_values.yaml. By default its enabled
+  To disable gateway configuration , modify the below on core/custom-values.yaml. By default its enabled
   ```yaml
   gatewayConfig:
     enabled: false

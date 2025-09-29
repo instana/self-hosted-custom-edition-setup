@@ -7,7 +7,7 @@ install_datastore_beeinstana() {
   helm_upgrade "beeinstana-operator" "instana/beeinstana-operator" "instana-beeinstana" "${BEEINSTANA_OPERATOR_CHART_VERSION}" \
     --set-string image.registry="${REGISTRY_URL}" \
     --set-string image.repository="beeinstana/operator" \
-    -f values/beeinstana-operator/instana_values.yaml
+    -f values/beeinstana-operator/instana-values.yaml
 
   wait_for_k8s_object secret kafka-user instana-kafka
 
@@ -47,7 +47,7 @@ install_datastore_cassandra() {
     --set-string image.repository="self-hosted-images/3rd-party/operator/cass-operator" \
     --set-string imageConfig.systemLogger="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/system-logger:${CASSANDRA_OPERATOR_SYSTEMLOGGER_IMAGE_TAG}" \
     --set-string imageConfig.k8ssandraClient="${REGISTRY_URL}/self-hosted-images/3rd-party/datastore/k8ssandra-client:${CASSANDRA_OPERATOR_K8SSANDRACLIENT_IMAGE_TAG}" \
-    -f values/cassandra-operator/instana_values.yaml
+    -f values/cassandra-operator/instana-values.yaml
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
   check_webhook_and_service "instana-cassandra" "cass-operator-webhook-service" "cass-operator-validating-webhook-configuration"
@@ -71,7 +71,7 @@ install_datastore_clickhouse() {
 
   helm_upgrade "clickhouse-operator" "instana/ibm-clickhouse-operator" "instana-clickhouse" "${CLICKHOUSE_OPERATOR_CHART_VERSION}" \
     --set-string operator.image.repository="${REGISTRY_URL}/clickhouse-operator" \
-    -f values/clickhouse-operator/instana_values.yaml
+    -f values/clickhouse-operator/instana-values.yaml
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments clickhouse)"
@@ -88,7 +88,7 @@ install_datastore_es() {
 
   helm_upgrade "elastic-operator" "instana/eck-operator" "instana-elastic" "${ES_OPERATOR_CHART_VERSION}" \
     --set-string image.repository="${REGISTRY_URL}/self-hosted-images/3rd-party/operator/elasticsearch" \
-    -f values/elasticsearch-operator/instana_values.yaml
+    -f values/elasticsearch-operator/instana-values.yaml
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
   check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "elastic-operator.instana-elastic.k8s.elastic.co"
@@ -113,7 +113,7 @@ install_datastore_kafka() {
     --set-string topicOperator.image.repository="self-hosted-images/3rd-party/operator" \
     --set-string userOperator.image.registry="${REGISTRY_URL}" \
     --set-string userOperator.image.repository="self-hosted-images/3rd-party/operator" \
-    -f values/kafka-operator/instana_values.yaml
+    -f values/kafka-operator/instana-values.yaml
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments kafka)"
@@ -137,7 +137,7 @@ install_datastore_postgres() {
 
   helm_upgrade "cnpg" "instana/cloudnative-pg" "instana-postgres" "${POSTGRES_OPERATOR_CHART_VERSION}" "${args[@]}" \
      --set-string image.repository="${REGISTRY_URL}/self-hosted-images/3rd-party/operator/cloudnative-pg" \
-     -f values/postgres-operator/instana_values.yaml
+     -f values/postgres-operator/instana-values.yaml
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
   check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "cnpg-validating-webhook-configuration"

@@ -99,14 +99,14 @@ generate_helm_file_arguments() {
   local file_args=()
 
   # Check and append file arguments if the files exist
-  file_args+=("--values=values/${component}/instana_values.yaml")
+  file_args+=("--values=values/${component}/instana-values.yaml")
 
-  if [ -f "values/${component}/instana_values_${CLUSTER_TYPE}.yaml" ]; then
-    file_args+=("--values=values/${component}/instana_values_${CLUSTER_TYPE}.yaml")
+  if [ -f "values/${component}/instana-values-${CLUSTER_TYPE}.yaml" ]; then
+    file_args+=("--values=values/${component}/instana-values-${CLUSTER_TYPE}.yaml")
   fi
 
-  if [ -f "values/${component}/custom_values.yaml" ]; then
-    file_args+=("--values=values/${component}/custom_values.yaml")
+  if [ -f "values/${component}/custom-values.yaml" ]; then
+    file_args+=("--values=values/${component}/custom-values.yaml")
   fi
 
   # Output as a space-separated string

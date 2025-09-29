@@ -31,8 +31,8 @@ validate_config() {
   verify_non_empty "INSTANA_UNIT_NAME" "$INSTANA_UNIT_NAME"
   verify_non_empty "INSTANA_TENANT_NAME" "$INSTANA_TENANT_NAME"
     # Check YAML config keys
-  local yaml_file="values/core/custom_values.yaml"
-  [ ! -f "$yaml_file" ] && yaml_file="values/core/instana_values.yaml"
+  local yaml_file="values/core/custom-values.yaml"
+  [ ! -f "$yaml_file" ] && yaml_file="values/core/instana-values.yaml"
   info "Validating YAML config file: $yaml_file"
   verify_yaml_key_or_host_port_non_empty "$yaml_file" "baseDomain" "baseDomain"
   verify_yaml_key_or_host_port_non_empty "$yaml_file" "acceptors.agent" "agent acceptor"
@@ -64,7 +64,7 @@ install_cert_manager() {
     --set-string acmesolver.image.repository="jetstack/cert-manager-acmesolver" \
     --set-string startupapicheck.image.registry="${REGISTRY_URL}" \
     --set-string startupapicheck.image.repository="jetstack/cert-manager-startupapicheck" \
-    -f values/cert-manager/instana_values.yaml
+    -f values/cert-manager/instana-values.yaml
 }
 
 uninstall_cert_manager() {
@@ -107,8 +107,8 @@ get_yaml_value() {
   local key="$2"
   local value
 
-  local custom_yaml="values/${component}/custom_values.yaml"
-  local default_yaml="values/${component}/instana_values.yaml"
+  local custom_yaml="values/${component}/custom-values.yaml"
+  local default_yaml="values/${component}/instana-values.yaml"
 
   if [ -f "$custom_yaml" ]; then
     value=$(yq e "$key" "$custom_yaml")

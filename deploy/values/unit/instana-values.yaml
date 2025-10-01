@@ -1,5 +1,3 @@
-tenantName: "tenant0"
-unitName: "unit0"
 initialAdminUser: admin@instana.local
 initialAdminPassword: "mypass"
 properties: []

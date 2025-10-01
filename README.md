@@ -1,11 +1,10 @@
-# Self Hosted Custom Edition Installation Script
+# Self hosted custom edition installation script
 
-This script helps you install the Self Hosted Custom Edition on OCP (Red Hat OpenShift Container Platform), EKS (Amazon Elastic
-Kubernetes Service), AKS (Azure Kubernetes Service), GKE (Google Kubernetes Engine), ARO (Azure Redhat Openshift) and ROSA (Red Hat OpenShift Service on AWS) clusters.
+This script helps you install the Instana Self Hosted Custom Edition on OCP (Red Hat OpenShift Container Platform), EKS (Amazon Elastic Kubernetes Service), AKS (Azure Kubernetes Service), GKE (Google Kubernetes Engine), ARO (Azure Red Hat OpenShift) and ROSA (Red Hat OpenShift Service on AWS) clusters, with support only for both x86_64 and ARM64 architectures.
 
 The tool is based on Helm charts and values and allows for custom installations tailored to your needs.
 
-## Prerequisite and Preparing
+## Prerequisite and preparing
 
 Before installation, ensure the following prerequisites are met:
 
@@ -25,7 +24,7 @@ Before installation, ensure the following prerequisites are met:
   curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
   ```
 
-- ### Storage Class
+- ### Storageclass
 
   Instana requires `ReadWriteMany` (RWX) or `ReadWriteOnce` (RWO) storage for raw spans and monitoring data. Ensure a default
   storage class is set on the cluster, otherwise the installation of data stores will fail.
@@ -42,7 +41,7 @@ Before installation, ensure the following prerequisites are met:
   kubectl patch storageclass <storageclass_name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
   ```
 
-- ### Kubernetes Version
+- ### Kubernetes version
 
   Kubectl must be installed and its version should be >1.25.
 
@@ -66,7 +65,7 @@ Before installation, ensure the following prerequisites are met:
   kubectl version
   ```
 
-- ### OCP Cluster and Version
+- ### OCP cluster and version
 
   If using OpenShift, the OCP version must be >4.13 and OpenShift CLI (`oc`) must be installed. Check the OpenShift version:
 
@@ -93,11 +92,11 @@ Before installation, ensure the following prerequisites are met:
 - ### How to access the code?
   Clone the repository
   ```bash
-  git clone https://github.ibm.com/instana/shce-automation-script.git
+  git clone https://github.com/instana/self-hosted-custom-edition-setup.git
   ```
   Navigate to the Project Directory
   ```bash
-  cd /shce-automation-script/deploy
+  cd ./self-hosted-custom-edition-setup/deploy
   ```
 
 
@@ -111,14 +110,13 @@ Before running the installation script, ensure the following configurations are 
 
   Set the `CLUSTER_TYPE` environment variable based on your cluster type (`ocp`, `eks`, `aks`, `gke`).
   For ARO and ROSA set the `CLUSTER_TYPE` environment variable to `ocp`.
-  For more details on setting up ARO and ROSA infrastructure and setup follow [ARO&ROSA](/docs/ARO&ROSA.md)
 
 - ### config.env File
 
   Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY` and `CLUSTER_TYPE`
 
-  > [!NOTE]
-  > If `AGENT_KEY` is not configured, defaults to `DOWNLOAD_KEY`.
+> [!NOTE]
+> If `AGENT_KEY` is not configured, defaults to `DOWNLOAD_KEY`.
 
   Example:
 
@@ -148,7 +146,7 @@ Before running the installation script, ensure the following configurations are 
   AZURE_STORAGE_CAPACITY=<PersistentVolume size> # By default 100Gi
   ```
 
-## Necessary Custom Values
+## Necessary custom values
 
 Make sure to customize these values in the respective value files.
 > [!NOTE]
@@ -181,15 +179,15 @@ In `values/instana-operator/custom-values.yaml`, configure image tag.
 ```yaml
 operator:
   image:
-    tag: 1.4.0
+    tag: x.x.x
 webhook:
   image:
-    tag: 1.4.0
+    tag: x.x.x
 ```
 
 ### Core
 
-#### Configure Instana Backend Versions
+#### Configure instana backend versions
 
 > [!NOTE]
 > We can configure the Instana backend version in the `CoreSpec` [Reference](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-api-reference#imageconfig)
@@ -200,12 +198,12 @@ In `values/core/custom-values.yaml`, configure the `imageConfig`.
 
 ```yaml
 imageConfig:
-  tag: 3.295.358-0
+  tag: 3.x.x-x
   # registry: artifact-public.instana.io
   # repository: backend
 ```
 
-#### Email Configuration:
+#### Email configuration:
 
 _Example of_ `emailConfig`:
 
@@ -305,13 +303,13 @@ metadata:
   name: azure-volume
 spec:
   capacity:
-    storage: { { AZURE_STORAGE_CAPACITY } }
+    storage: {{ AZURE_STORAGE_CAPACITY }}
   accessModes:
     - ReadWriteMany
   azureFile:
     secretName: azure-storage-account
     secretNamespace: instana-core
-    shareName: { { AZURE_STORAGE_FILESHARE_NAME } }
+    shareName: {{ AZURE_STORAGE_FILESHARE_NAME }}
     readOnly: false
   storageClassName: "" # use "azurefile" if you have azurefile as one of the storage classes on aks
   persistentVolumeReclaimPolicy: Retain
@@ -401,7 +399,7 @@ storageConfigs:
 
 ## Installation
 
-### Tool Usage
+### Tool usage
 
 The main script for installation is `shce.sh`.
 
@@ -417,7 +415,7 @@ To install only data stores:
 ./shce.sh datastores apply
 ```
 
-### Install Specific Data Stores
+### Install specific data stores
 
 To install individual data stores, such as Kafka or Postgres:
 
@@ -448,7 +446,7 @@ All the DNS related changes needs to be specified on the core/instana-values.yam
 - <u> Base Domain </u>
 Base domain is a mandatory field , which will represent the DNS for the instana application
   ```yaml
-  baseDomain: "instana.apps.instanta-fips-test-01.cp.fyre.ibm.com"
+  baseDomain: "instana.example.com"
   ```
 
 - <u> Agent Acceptor </u>
@@ -456,7 +454,7 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
   ```yaml
   acceptors:
     agent:
-      host: "agent.self-hosted-instana.instana.rocks"
+      host: "agent.instana.example.com"
   ```
 
 - <u>Gateway configuration</u>
@@ -567,7 +565,7 @@ To delete all data stores and the Instana backend:
 ```bash
 ./shce.sh delete
 ```
-### Delete Specific Data Stores
+### Delete specific data stores
 
 To delete individual data stores, such as Kafka or Postgres:
 

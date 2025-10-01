@@ -5,8 +5,11 @@ clickhouse:
     layout:
       replicasCount: 2
 keeper:
-  replicas: 3
+  clusters:
+    layout:
+      replicasCount: 3
 image:
   tag: "24.8.14.39-7-lts-ibm"
+  repository: "clickhouse"
 imagePullSecrets:
   - name: "instana-registry"

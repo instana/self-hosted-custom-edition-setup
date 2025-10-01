@@ -243,6 +243,8 @@ install_instana_unit() {
   read -ra file_args <<<"$(generate_helm_file_arguments unit)"
 
   helm_upgrade "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}" "instana/instana-unit" "instana-units" "${INSTANA_UNIT_CHART_VERSION}" \
+    --set tenantName="${INSTANA_TENANT_NAME}" \
+    --set unitName="${INSTANA_UNIT_NAME}"\
     --set licenses="{$license_content}" \
     --set agentKeys="{$AGENT_KEY}" \
     --set-literal downloadKey="$DOWNLOAD_KEY" \

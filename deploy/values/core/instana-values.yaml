@@ -41,9 +41,7 @@ gatewayConfig:
     tlsCipherSuites: []
     # -- Deployment configuration for the gateway-controller
     config: {}
-tenantUnits:
-  - unitName: unit0
-    tenantName: tenant0
+tenantUnits: []
 deploymentStrategyType: RollingUpdate
 dhParams: ""
 repositoryPassword: ""

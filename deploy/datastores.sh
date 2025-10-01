@@ -78,7 +78,6 @@ install_datastore_clickhouse() {
 
   helm_upgrade "clickhouse" "instana/instana-clickhouse" "instana-clickhouse" "${CLICKHOUSE_INSTANCE_CHART_VERSION}" \
     --set-string image.registry="${REGISTRY_URL}" \
-    --set-string image.repository="clickhouse-openssl" \
     "${file_args[@]}"
 }
 

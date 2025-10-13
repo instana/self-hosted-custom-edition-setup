@@ -6,3 +6,5 @@ priorityClassName: ""
 env: []
 coreName: "instana-core"
 coreNamespace: "instana-core"
+imagePullSecrets:
+  - name: "instana-registry"

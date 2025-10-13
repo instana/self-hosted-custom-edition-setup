@@ -248,6 +248,7 @@ install_instana_unit() {
     --set licenses="{$license_content}" \
     --set agentKeys="{$AGENT_KEY}" \
     --set-literal downloadKey="$DOWNLOAD_KEY" \
+    --set-string cleanupJob.image.registry="${REGISTRY_URL}" \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-units" "unit" "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}"

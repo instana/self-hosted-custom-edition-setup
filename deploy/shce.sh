@@ -202,15 +202,12 @@ install_instana_core() {
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments core)"
   #gateway cnfiguration checks
-  CONFIG_REGISTRY_URL=$(grep -E '^REGISTRY_URL=' ./config.env | cut -d= -f2-)
-  if [ -n "$CONFIG_REGISTRY_URL" ]; then
-    REGISTRY_DOMAIN=$(echo "$CONFIG_REGISTRY_URL" | cut -d/ -f1)
-  fi
   HELM_ARGS=()
-  if [ "$IS_GATEWAY_V2_ENABLED" == "true" ] && [ -n "$CONFIG_REGISTRY_URL" ]; then
+
+  if [ "$IS_GATEWAY_V2_ENABLED" == "true" ] && [ -n "$REGISTRY_URL" ]; then
     HELM_ARGS+=(
-    --set-string gatewayConfig.gateway.imageConfig.registry="${REGISTRY_DOMAIN}"
-    --set-string gatewayConfig.controller.imageConfig.registry="${REGISTRY_DOMAIN}"
+      --set-string gatewayConfig.gateway.imageConfig.registry="${REGISTRY_URL}"
+      --set-string gatewayConfig.controller.imageConfig.registry="${REGISTRY_URL}"
     )
   fi
 

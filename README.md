@@ -4,6 +4,15 @@ This script helps you install the Instana Self Hosted Custom Edition on OCP (Red
 
 The tool is based on Helm charts and values and allows for custom installations tailored to your needs.
 
+
+## Contents
+  1. [Configure loadbalancer and dns](#setting-up-load-balancers-and-dns)
+  2. [Configure storageconfig](#storageconfig)
+  3. [Configure necessary values](#necessary-custom-values)
+  3. [Installation](#to-install-all-data-stores-and-the-instana-backend)
+      1. [Install datastores](#to-install-only-data-stores)
+      2. [Configure Instana backend](#instana-backend-configurations)
+
 ## Prerequisite and preparing
 
 Before installation, ensure the following prerequisites are met:
@@ -104,19 +113,14 @@ Before installation, ensure the following prerequisites are met:
 
 Before running the installation script, ensure the following configurations are set.
 > [!NOTE]
-  > All the below configuration and steps should be added and executed within the project directory (deploy/) .
+> All the below configuration and steps should be added and executed within the project directory (deploy/) .
 
-- ### CLUSTER_TYPE Environment Variable
-
-  Set the `CLUSTER_TYPE` environment variable based on your cluster type (`ocp`, `eks`, `aks`, `gke`).
-  For ARO and ROSA set the `CLUSTER_TYPE` environment variable to `ocp`.
-
-- ### config.env File
+- ### `config.env`
 
   Create a `config.env` file in the same directory as the tool. It should include the Instana `DOWNLOAD_KEY`, `SALES_KEY`, `AGENT_KEY` and `CLUSTER_TYPE`
 
 > [!NOTE]
-> If `AGENT_KEY` is not configured, defaults to `DOWNLOAD_KEY`.
+> If `AGENT_KEY` is not configured, an auto-generated key will be used.
 
   Example:
 
@@ -216,6 +220,10 @@ emailConfig:
     host: "your-smtp-host"
 ```
 
+### Storageconfig
+
+- #### Storageconfig with `pvcConfig`
+  
 _Example of_ `storageConfigs` with `pvcConfig`:
 
 - `storageConfigs.rawSpans.pvcConfig`
@@ -240,6 +248,8 @@ storageConfigs:
           storage: 100Gi
       storageClassName: "your-storage-class"
 ```
+
+- #### Storageconfig with `s3Config`
 
 _Example of_ `storageConfigs` with `s3Config`:
 
@@ -275,6 +285,8 @@ storageConfigs:
 serviceAccountAnnotations:
   eks.amazonaws.com/role-arn: "arn:aws:iam::<ReplaceAccountID>:role/<IAM Role>"
 ```
+
+- #### Storageconfig with `Azure`
 
 _Example of_ `storageConfigs` for `Azure`:
 
@@ -315,17 +327,21 @@ spec:
   persistentVolumeReclaimPolicy: Retain
 ```
 
-Configuration fields:
+---
+
+Configuration fields for s3Config:
 | Field | Description |
 |------------------------|-----------------------------------------------------------------------------------------------|
 | `endpoint` | The S3 endpoint for the specified AWS region. Replace `<s3-region>` with your desired region (e.g., `us-west-2`). |
 | `region` | The AWS region where the S3 bucket is located (e.g., `us-west-2`). |
 | `bucket` | The name of the S3 bucket where the data will be stored (e.g., `my-data-bucket`). |
 | `prefix` | The path or folder in the S3 bucket where the data is stored (e.g., `rawspans/`). |
-| `storageClass` | The storage class for primary data (e.g., `Standard`, `Intelligent-Tiering`, `Glacier`). |
+| `storageClass` | The storage class for primary data (e.g., `STANDARD`, `Intelligent-Tiering`, `Glacier`). |
 | `bucketLongTerm` | The name of the S3 bucket for long-term storage of data (e.g., `my-longterm-backups`). |
 | `prefixLongTerm` | The path or folder in the long-term storage bucket for organizing the data (e.g., `archives/`).|
-| `storageClassLongTerm` | The storage class for long-term data storage (e.g., `Standard`, `Deep_Archive`). |
+| `storageClassLongTerm` | The storage class for long-term data storage (e.g., `STANDARD`, `Deep_Archive`). |
+
+### Configuring FeatureFlags
 
 _Example of_ `featureflags`
 
@@ -338,6 +354,7 @@ featureFlags:
   - name: feature.internal.monitoring.unit
     enabled: true
 ```
+
 For additional feature flags visit the [link](https://www.ibm.com/docs/en/instana-observability/current?topic=edition-enabling-optional-features)
 
 > [!NOTE]
@@ -403,19 +420,19 @@ storageConfigs:
 
 The main script for installation is `shce.sh`.
 
-To install all data stores and the Instana backend:
+#### To install all data stores and the Instana backend:
 
 ```bash
 ./shce.sh apply
 ```
 
-To install only data stores:
+#### To install only data stores:
 
 ```bash
 ./shce.sh datastores apply
 ```
 
-### Install specific data stores
+#### Install specific data stores
 
 To install individual data stores, such as Kafka or Postgres:
 
@@ -424,7 +441,7 @@ To install individual data stores, such as Kafka or Postgres:
 ./shce.sh datastores apply postgres
 ```
 
-### Instana backend configurations
+#### Instana backend configurations
 
 At any time during or after the Instana backend installation, you can update the Instana Core configuration values in `values/core/custom-values.yaml` and `values/unit/custom-values.yaml`. Run the following command to apply the backend configurations:
 
@@ -443,13 +460,13 @@ in `instana-core` namespace.
 
 All the DNS related changes needs to be specified on the core/instana-values.yaml or core/custom-values.yaml
 
-- <u> Base Domain </u>
-Base domain is a mandatory field , which will represent the DNS for the instana application
+- <u> **Base Domain** </u>
+  Base domain is a mandatory field , which will represent the DNS for the instana application
   ```yaml
   baseDomain: "instana.example.com"
   ```
 
-- <u> Agent Acceptor </u>
+- <u> **Agent Acceptor** </u>
 The acceptor is the endpoint that Instana agents need to reach to deliver traces or metrics to the Instana backend. The acceptor is usually a subdomain for the baseDomain that is configured previously in the Basic configuration section.
   ```yaml
   acceptors:
@@ -457,7 +474,7 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
       host: "agent.instana.example.com"
   ```
 
-- <u>Gateway configuration</u>
+- <u> **Gateway configuration** </u>
   To disable gateway configuration , modify the below on core/custom-values.yaml. By default its enabled
   ```yaml
   gatewayConfig:
@@ -471,8 +488,10 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
       loadBalancerConfig:
         enabled: true
   ```
-  > [!NOTE]
-  > For vanilla Openshift cluster, you dont need to enable the loadBalancerConfig. For other Kubernetes flavours like ARO , ROSA , AKS , GKE & AWS you can enable this . Also if you have your own public ip you can add that under the loadBalancerConfig
+
+> [!NOTE]
+> For vanilla Openshift cluster, you dont need to enable the loadBalancerConfig. For other Kubernetes flavours like ARO , ROSA , AKS , GKE & AWS you can enable this . Also if you have your own public ip you can add that under the loadBalancerConfig
+
   ```yaml
   gatewayConfig:
     enabled: true
@@ -486,57 +505,67 @@ The acceptor is the endpoint that Instana agents need to reach to deliver traces
   ````
 
   You can configure the hosts and ports for the following types of ingress traffic:
+
   ```Instana Agent
   Synthetics
   Serverless
   OTLP (HTTP/gRPC)
   EUM
   ```
+  
   - The following examples show how to configure your acceptor traffic ingestion based on different requirements:
-  1. **Use subdomains with a single port (443)** This approach allows you to expose only one port (443) while using subdomains to differentiate traffic for each acceptor.
-      ```yaml
-      spec:
-        acceptors:
-          agent:
-            host: ingress.<instana.example.com>
-            port: 443
-          otlp:
-            http:
-              host: otlp-http.<instana.example.com>
-              port: 443
-            grpc:
-              host: otlp-grpc.<instana.example.com>
-              port: 443
-          eum:
-            host: eum.<instana.example.com>
-            port: 443
-          synthetics:
-            host: synthetics.<instana.example.com>
-            port: 443
-          serverless:
-            host: serverless.<instana.example.com>
-            port: 443
-      ```
-  2. **Use a single domain with different ports** This approach allows you to use a single domain while differentiating acceptor traffic based on port numbers.
-      ```yaml
-      spec:
-        acceptors:
-          agent:
-            port: 1444
-          otlp:
-            http:
-              port: 4318
-            grpc:
-              port: 4317
-          eum:
-            port: 1555
-          synthetics:
-            port: 1666
-          serverless:
-            port: 1777
-      ```
+  #### **Use subdomains with a single port (443)** 
+  
+  This approach allows you to expose only one port (443) while using subdomains to differentiate traffic for each acceptor.
+
+  ```yaml
+  spec:
+    acceptors:
+      agent:
+        host: ingress.<instana.example.com>
+        port: 443
+      otlp:
+        http:
+          host: otlp-http.<instana.example.com>
+          port: 443
+        grpc:
+          host: otlp-grpc.<instana.example.com>
+          port: 443
+      eum:
+        host: eum.<instana.example.com>
+        port: 443
+      synthetics:
+        host: synthetics.<instana.example.com>
+        port: 443
+      serverless:
+        host: serverless.<instana.example.com>
+        port: 443
+  ```
+
+  #### **Use a single domain with different ports**
+  
+  This approach allows you to use a single domain while differentiating acceptor traffic based on port numbers.
+
+  ```yaml
+  spec:
+    acceptors:
+      agent:
+        port: 1444
+      otlp:
+        http:
+          port: 4318
+        grpc:
+          port: 4317
+      eum:
+        port: 1555
+      synthetics:
+        port: 1666
+      serverless:
+        port: 1777
+  ```
 - <u>Enabling support for single ingress domain</u>
   Custom Edition environment can route traffic for all tenants through a single base domain . After enabling this behaviour, the URL for accessing the UI of all your Instana tenants is served at basedomain.com/tenantname/unitname instead of unitname-tenantname.basedomain.com.
+
   ```yaml
   properties:
   - name: config.url.format.pathStyle

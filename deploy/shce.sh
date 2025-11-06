@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -o errexit
 
-source ./config.env
-source ./versions.sh
-source ./helper.sh
-source ./datastores.sh
-
 validate_k8s_access() {
   info "Checking if Kubernetes cluster is accessible..."
   kubectl get node >/dev/null 2>&1 || error "You must be logged in to the Kubernetes server before running this tool."
@@ -337,8 +332,13 @@ main() {
   script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
   pushd "$script_dir" >/dev/null 2>&1 || exit
 
-  precheck
+  # Source general scripts and configuration files
+  source ./config.env
+  source ./versions.sh
+  source ./helper.sh
+  source ./datastores.sh
 
+  # Process command line arguments
   local action=$1
   case $action in
   "apply")

@@ -13,33 +13,24 @@ acceptors:
   serverless: {}
   eum: {}
 gatewayConfig:
-  # -- Enable gateway-controller with gateway-v2
   enabled: true
+  disableTLS: false
   gateway:
-    # -- Image config for the gateway image
     imageConfig: {}
-    # -- Number of gateway replicas
     replicas: 1
-    # -- Log level for gateway
     logLevel: error
-    # -- Listener IP for gateway admin endpoint
     adminListener: 127.0.0.1
-    # -- Circuit breaker configuration for Gateway acceptor ingress traffic.
     circuitBreakers:
       maxConnections: 50000
       maxPendingRequests: 50000
       maxRequests: 50000
       maxRetries: 4
-    # -- Deployment configuration for the gateway
     config: {}
+    loadBalancerConfig: {}
   controller:
-    # -- Image config for the gateway image
     imageConfig: {}
-    # -- Number of gateway replicas
     replicas: 1
-    # -- List of TLS cipher suites to use
     tlsCipherSuites: []
-    # -- Deployment configuration for the gateway-controller
     config: {}
 tenantUnits: []
 deploymentStrategyType: RollingUpdate
@@ -60,11 +51,7 @@ emailConfig:
 imagePullSecrets:
   - name: instana-registry
 imagePullPolicy: IfNotPresent
-storageConfigs:
-  rawSpans: {}
-  eumSourceMaps: {}
-  synthetics: {}
-  syntheticsKeystore: {}
+storageConfigs: {}
 resourceProfile: small
 properties: []
 featureFlags:

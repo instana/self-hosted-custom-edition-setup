@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-: "${AGENT_KEY:=$DOWNLOAD_KEY}"
 : "${HELM_INSTALL_TIMEOUT:=1200s}"
 : "${HELM_UNINSTALL_TIMEOUT:=300s}"
 : "${K8S_READINESS_TIMEOUT:=900s}"

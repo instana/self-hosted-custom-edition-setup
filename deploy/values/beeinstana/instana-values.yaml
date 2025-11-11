@@ -6,24 +6,27 @@ aggregator:
   image:
     tag: v1.85.76-release
   cpu: 4
-  memory: 16Gi
+  memory: 48Gi
+  limitMemory: true
   mirrors: 2
   shards: 1
   volumes:
     live:
-      size: 2000Gi
+      size: 500Gi
       storageClass: ""
 config:
   image:
     tag: v2.44.0
   cpu: 200m
   memory: 200Mi
+  limitMemory: true
   replicas: 1
 ingestor:
   image:
     tag: v1.85.76-release
-  cpu: 8
+  cpu: 2
   memory: 4Gi
+  limitMemory: true
   replicas: 1
   workerPoolSize: 20
   flushInterval: 10000

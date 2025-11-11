@@ -5,6 +5,10 @@ resources:
   requests:
     cpu: 500m
     memory: 1Gi
+  limits:
+    memory: 1Gi
+storage:
+  size: 50Gi
 image:
   tag: "15_v0.29.0"
 imagePullSecrets:

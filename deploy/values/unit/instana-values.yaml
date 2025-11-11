@@ -1,5 +1,6 @@
 initialAdminUser: admin@instana.local
 initialAdminPassword: "mypass"
+resourceProfile: medium
 properties: []
 componentConfigs: []
 priorityClassName: ""

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# (c) Copyright IBM Corp. 2025
 
 install_datastore_beeinstana() {
   create_namespace_if_not_exist instana-beeinstana

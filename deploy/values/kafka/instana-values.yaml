@@ -5,8 +5,8 @@ replicas:
   controller: 3
 storage:
   size:
-    kafka: 50Gi
-    controller: 5Gi
+    kafka: 500Gi
+    controller: 50Gi
   deleteClaim:
     kafka: "false"
     controller: "false"
@@ -23,3 +23,26 @@ imagePullSecrets:
 version: 3.9.1
 kraft: "enabled"
 nodePools: "enabled"
+resources:
+  kafka:
+    requests:
+      cpu: "4000m"
+      memory: "20Gi"
+    limits:
+      memory: "20Gi"
+  controller:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      memory: "2Gi"
+config:
+  kafka:
+    offsets.topic.replication.factor: 3
+    transaction.state.log.replication.factor: 3
+    transaction.state.log.min.isr: 2
+    default.replication.factor: 3
+    min.insync.replicas: 2
+    max.message.bytes: 52428800
+    message.max.bytes: 52428800 
+    replica.fetch.max.bytes: 52428800

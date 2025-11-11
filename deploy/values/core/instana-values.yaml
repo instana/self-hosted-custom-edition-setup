@@ -52,7 +52,7 @@ imagePullSecrets:
   - name: instana-registry
 imagePullPolicy: IfNotPresent
 storageConfigs: {}
-resourceProfile: small
+resourceProfile: medium
 properties: []
 featureFlags:
   - name: feature.beeinstana.infra.metrics.enabled

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# (c) Copyright IBM Corp. 2025
+
 set -o errexit
 
 validate_k8s_access() {

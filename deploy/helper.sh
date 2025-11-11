@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# (c) Copyright IBM Corp. 2025
 
 : "${HELM_INSTALL_TIMEOUT:=1200s}"
 : "${HELM_UNINSTALL_TIMEOUT:=300s}"

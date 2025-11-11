@@ -4,10 +4,43 @@ clickhouse:
   clusters:
     layout:
       replicasCount: 2
+  resources:
+    requests:
+      cpu: "10000m"
+      memory: "20Gi"
+    limits:
+      memory: "20Gi"
+  volumeClaimTemplates:
+    # Data storage
+    dataStorageClassName: "your-storage-class"  # Storage class for data
+    dataStorage: "500Gi"                        # Storage capacity for data
+    
+    # Log storage
+    logStorageClassName: "your-storage-class"   # Storage class for logs
+    logStorage: "50Gi"                           # Storage capacity for logs
+    
+    # Cold tier storage
+    coldStorageClassName: "your-storage-class"  # Storage class for cold tier
+    coldStorage: "100Gi"   
 keeper:
   clusters:
     layout:
       replicasCount: 3
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      memory: "2Gi"
+  volumeClaimTemplates:
+    # -- Storage class for log.
+    logStorageClassName: "your-storage-class"
+    # -- Storage capacity for log.
+    logStorage: "50Gi"
+    # -- Storage class for snapshot.
+    snapshotStorageClassName: "your-storage-class"
+    # -- Storage capacity for snapshot.
+    snapshotStorage: "50Gi"
 image:
   tag: "24.8.14.39-7-lts-ibm"
   repository: "clickhouse"

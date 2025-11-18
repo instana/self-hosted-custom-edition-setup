@@ -12,15 +12,15 @@ clickhouse:
       memory: "20Gi"
   volumeClaimTemplates:
     # Data storage
-    dataStorageClassName: "your-storage-class"  # Storage class for data
+    dataStorageClassName: ""  # Storage class for data
     dataStorage: "500Gi"                        # Storage capacity for data
     
     # Log storage
-    logStorageClassName: "your-storage-class"   # Storage class for logs
+    logStorageClassName: ""   # Storage class for logs
     logStorage: "50Gi"                           # Storage capacity for logs
     
     # Cold tier storage
-    coldStorageClassName: "your-storage-class"  # Storage class for cold tier
+    coldStorageClassName: ""  # Storage class for cold tier
     coldStorage: "100Gi"   
 keeper:
   clusters:
@@ -34,11 +34,11 @@ keeper:
       memory: "2Gi"
   volumeClaimTemplates:
     # -- Storage class for log.
-    logStorageClassName: "your-storage-class"
+    logStorageClassName: ""
     # -- Storage capacity for log.
     logStorage: "50Gi"
     # -- Storage class for snapshot.
-    snapshotStorageClassName: "your-storage-class"
+    snapshotStorageClassName: ""
     # -- Storage capacity for snapshot.
     snapshotStorage: "50Gi"
 image:

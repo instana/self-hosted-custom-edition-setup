@@ -10,6 +10,6 @@ resources:
 storage:
   size: 50Gi
 image:
-  tag: "15_v0.29.0"
+  tag: "15_v0.31.0"
 imagePullSecrets:
   - name: "instana-registry"

@@ -51,7 +51,7 @@ install_datastore_cassandra() {
     -f values/cassandra-operator/instana-values.yaml
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
-  check_webhook_and_service "instana-cassandra" "cass-operator-webhook-service" "cass-operator-validating-webhook-configuration"
+  check_webhook_and_service "instana-cassandra" "cass-operator-webhook-service" "validatingwebhookconfiguration" "cass-operator-validating-webhook-configuration"
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments cassandra)"
@@ -91,7 +91,7 @@ install_datastore_es() {
     -f values/elasticsearch-operator/instana-values.yaml
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
-  check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "elastic-operator.instana-elastic.k8s.elastic.co"
+  check_webhook_and_service "instana-elastic" "elastic-operator-webhook" "validatingwebhookconfiguration" "elastic-operator.instana-elastic.k8s.elastic.co"
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments elasticsearch)"
@@ -140,7 +140,8 @@ install_datastore_postgres() {
      -f values/postgres-operator/instana-values.yaml
 
   # Ensure Webhook Service and configuration are ready, preventing potential installation failures
-  check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "cnpg-validating-webhook-configuration"
+  check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "validatingwebhookconfiguration" "cnpg-validating-webhook-configuration"
+  check_webhook_and_service "instana-postgres" "cnpg-webhook-service" "mutatingwebhookconfiguration" "cnpg-mutating-webhook-configuration"
 
   local file_args
   read -ra file_args <<<"$(generate_helm_file_arguments postgres)"
@@ -210,10 +211,46 @@ uninstall_beeinstana() {
 check_webhook_and_service() {
   local namespace=$1
   local service_name=$2
-  local webhook_name=$3
+  local webhook_kind=$3
+  local webhook_name=$4
 
   wait_for_k8s_object svc "$service_name" "$namespace"
-  wait_for_k8s_object validatingwebhookconfigurations "$webhook_name" "$namespace"
+  wait_for_k8s_object "$webhook_kind" "$webhook_name" "$namespace"
+  wait_for_webhook_cabundle "$webhook_kind" "$webhook_name"
+}
+
+wait_for_webhook_cabundle() {
+  local webhook_kind=$1
+  local webhook_name=$2
+  local end_time=$(($(date +%s) + ${K8S_READINESS_TIMEOUT%s}))
+  local current_time
+  local ca_bundles
+
+  info "Waiting for caBundle injection on $webhook_kind/$webhook_name..."
+  while true; do
+    ca_bundles=$(kubectl get "$webhook_kind" "$webhook_name" -o jsonpath='{range .webhooks[*]}{.clientConfig.caBundle}{"\n"}{end}' 2>/dev/null || true)
+
+    if [[ -n "$ca_bundles" ]]; then
+      local missing_bundle=false
+      while IFS= read -r bundle; do
+        if [[ -z "$bundle" ]]; then
+          missing_bundle=true
+          break
+        fi
+      done <<<"$ca_bundles"
+
+      if [[ "$missing_bundle" == "false" ]]; then
+        info "caBundle injection detected for $webhook_kind/$webhook_name."
+        break
+      fi
+    fi
+
+    current_time=$(date +%s)
+    if [[ $current_time -ge $end_time ]]; then
+      error "Timed out waiting for caBundle injection on $webhook_kind/$webhook_name."
+    fi
+    sleep 3
+  done
 }
 
 check_datastore_readiness() {
@@ -283,6 +320,7 @@ install_datastores() {
     install_datastore_beeinstana
     ;;
   *)
+    install_cert_manager
     install_datastore_kafka
     install_datastore_es
     install_datastore_postgres

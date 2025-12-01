@@ -62,6 +62,9 @@ install_cert_manager() {
     --set-string startupapicheck.image.registry="${REGISTRY_URL}" \
     --set-string startupapicheck.image.repository="jetstack/cert-manager-startupapicheck" \
     -f values/cert-manager/instana-values.yaml
+
+    check_webhook_and_service "cert-manager" "cert-manager-webhook" "validatingwebhookconfiguration" "cert-manager-webhook"
+    check_webhook_and_service "cert-manager" "cert-manager-webhook" "mutatingwebhookconfiguration" "cert-manager-webhook"
 }
 
 uninstall_cert_manager() {
@@ -97,6 +100,7 @@ install_instana_operator() {
     "${file_args[@]}"
 
   check_pods_ready "instana-operator" "app.kubernetes.io/name=instana"
+  check_webhook_and_service "instana-operator" "instana-enterprise-operator-webhook" "validatingwebhookconfiguration" "instana-enterprise-operator-webhook-validating"
 }
 
 get_yaml_value() {

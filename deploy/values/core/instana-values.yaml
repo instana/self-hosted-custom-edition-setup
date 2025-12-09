@@ -17,14 +17,14 @@ gatewayConfig:
   disableTLS: false
   gateway:
     imageConfig: {}
-    replicas: 1
+    replicas: 2
     logLevel: error
     adminListener: 127.0.0.1
     circuitBreakers:
-      maxConnections: 50000
-      maxPendingRequests: 50000
-      maxRequests: 50000
-      maxRetries: 4
+      maxConnections: 150000
+      maxPendingRequests: 150000
+      maxRequests: 150000
+      maxRetries: 6
     config: {}
     loadBalancerConfig: {}
   controller:

@@ -42,7 +42,7 @@ keeper:
     # -- Storage capacity for snapshot.
     snapshotStorage: "50Gi"
 image:
-  tag: "24.8.14.39-7-lts-ibm"
+  tag: "25.8.6.11-1-lts-ibm"
   repository: "clickhouse"
 imagePullSecrets:
   - name: "instana-registry"

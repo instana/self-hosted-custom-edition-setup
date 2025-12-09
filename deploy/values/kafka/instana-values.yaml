@@ -8,8 +8,8 @@ storage:
     kafka: 500Gi
     controller: 50Gi
   deleteClaim:
-    kafka: "false"
-    controller: "false"
+    kafka: "true"
+    controller: "true"
 template:
   pod:
     tmpDirSizeLimit:

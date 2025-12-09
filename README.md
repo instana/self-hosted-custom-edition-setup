@@ -5,8 +5,15 @@ This repository contains scripts and configuration files to deploy Instana Self-
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Configuration Files Structure](#configuration-files-structure)
-3. [Modifying Default Values](#modifying-default-values)
+2. [Prerequisites](#prerequisites)
+    - [Helm](#helm)
+    - [Storageclass](#storageclass)
+    - [Kubernetes Version](#kubernetes-version)
+    - [Openshift](#ocp-cluster-and-version)
+    - [yq](#install-yq)
+
+3. [Configuration Files Structure](#configuration-files-structure)
+4. [Modifying Default Values](#modifying-default-values)
    - [Environment Configuration](#environment-configuration)
    - [Core Configuration](#core-configuration)
    - [Unit Configuration](#unit-configuration)
@@ -17,21 +24,112 @@ This repository contains scripts and configuration files to deploy Instana Self-
      - [Postgres](#postgres)
      - [Kafka](#kafka)
      - [BeeInstana](#beeinstana)
-4. [Storage Configuration](#storage-configuration)
+5. [Storage Configuration](#storage-configuration)
    - [PVC Configuration](#pvc-configuration)
    - [S3 Configuration](#s3-configuration)
    - [Azure Storage Configuration](#azure-storage-configuration)
-5. [Network and DNS Configuration](#network-and-dns-configuration)
+6. [Network and DNS Configuration](#network-and-dns-configuration)
    - [Base Domain](#base-domain)
    - [Agent Acceptor](#agent-acceptor)
    - [Gateway Configuration](#gateway-configuration)
-6. [Feature Flags](#feature-flags)
-7. [Installation Commands](#installation-commands)
-8. [Troubleshooting](#troubleshooting)
+7. [Feature Flags](#feature-flags)
+8. [Installation Commands](#installation-commands)
+9. [Troubleshooting](#troubleshooting)
 
 ## Overview
 
 The Instana Self-Hosted Custom Edition setup uses Helm charts to deploy various components on Kubernetes clusters. The deployment is orchestrated by shell scripts that apply the configuration values to the Helm charts.
+
+## Prerequisites
+
+Before installing Instana Self-Hosted Custom Edition, ensure you have the following prerequisites in place:
+
+| #   | Prerequisite                   | Reason                                             |
+| --- | ------------------------------ | -------------------------------------------------- |
+| 1   | Helm is installed              | Needed to deploy Helm charts                       |
+| 2   | A default storage class is set | Required for successful data store installations   |
+| 3   | Kubernetes version > 1.25      | Instana requires Kubernetes version 1.25 or higher |
+| 4   | OCP version > 4.13             | Required to deploy Instana on OpenShift            |
+| 5   | yq                             | Required to parse yaml            |
+
+- ### Helm
+
+  Helm is required to deploy Helm charts. To install Helm:
+
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  ```
+
+- ### Storageclass
+
+  Instana requires `ReadWriteMany` (RWX) or `ReadWriteOnce` (RWO) storage for raw spans and monitoring data. Ensure a default
+  storage class is set on the cluster, otherwise the installation of data stores will fail.
+
+  To verify the default storage class:
+
+  ```bash
+  kubectl get storageclass -o=jsonpath='{.items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")].metadata.name}{"\n"}'
+  ```
+
+  If no default is set, run:
+
+  ```bash
+  kubectl patch storageclass <storageclass_name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+  ```
+
+- ### Kubernetes version
+
+  Kubectl must be installed and its version should be >1.25.
+
+  To install the latest stable version:
+
+  ```bash
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  chmod +x kubectl
+  sudo mv kubectl /usr/local/bin/
+  ```
+
+  Verify your kubectl installation:
+
+  ```bash
+  kubectl version --client=true
+  ```
+
+  Kubernetes version must be >1.25. Check the server version:
+
+  ```bash
+  kubectl version
+  ```
+
+- ### OCP cluster and version
+
+  If using OpenShift, the OCP version must be >4.13 and OpenShift CLI (`oc`) must be installed. Check the OpenShift version:
+
+  ```bash
+  oc version
+  ```
+
+- ### Install yq
+
+  yq is a command-line tool for reading and writing YAML files
+
+  Mac (Homebrew):
+
+  ```bash
+  brew install yq
+  ```
+
+  Ubuntu / Debian:
+
+  ```bash
+  sudo snap install yq
+  ```
+
+  Check version:
+  
+  ```bash
+  yq --version
+  ```
 
 ## Configuration Files Structure
 
@@ -381,7 +479,73 @@ storage:
 
 #### Kafka
 
-Kafka configuration can be modified in `deploy/values/kafka/custom-values.yaml`. Refer to the Kafka Helm chart documentation for available options.
+Kafka configuration can be modified in `deploy/values/kafka/custom-values.yaml`. The main customizable parameters include:
+
+```yaml
+# Name configuration
+nameOverride: kafka
+fullnameOverride: kafka
+
+# Replica configuration
+replicas:
+  kafka: 3                              # Number of Kafka broker nodes (default: 3)
+  controller: 3                         # Number of controller nodes (default: 3)
+
+# Storage configuration
+storage:
+  size:
+    kafka: 500Gi                        # Storage size for Kafka data (default: 500Gi)
+    controller: 50Gi                    # Storage size for controller data (default: 50Gi)
+  deleteClaim:
+    kafka: "true"                       # Delete PVC on deletion (default: true)
+    controller: "true"                  # Delete PVC on deletion (default: true)
+
+# Temporary directory size limits
+template:
+  pod:
+    tmpDirSizeLimit:
+      kafka: 500Mi                      # Temp directory size for Kafka (default: 500Mi)
+      controller: 500Mi                 # Temp directory size for controller (default: 500Mi)
+      entityOperator: 500Mi             # Temp directory size for entity operator (default: 500Mi)
+
+# Image configuration
+image:
+  tag: "0.47.0-kafka-3.9.1_v0.24.0"    # Kafka image tag
+
+# Kafka version
+version: 3.9.1                          # Kafka version
+
+# KRaft mode (recommended)
+kraft: "enabled"                        # Enable KRaft mode (default: enabled)
+nodePools: "enabled"                    # Enable node pools (default: enabled)
+
+# Resource configuration
+resources:
+  kafka:
+    requests:
+      cpu: "4000m"                      # CPU request for Kafka (4 cores) (default: 4000m)
+      memory: "20Gi"                    # Memory request for Kafka (20 GB) (default: 20Gi)
+    limits:
+      memory: "20Gi"                    # Memory limit for Kafka (20 GB) (default: 20Gi)
+  controller:
+    requests:
+      cpu: "1000m"                      # CPU request for controller (1 core) (default: 1000m)
+      memory: "2Gi"                     # Memory request for controller (2 GB) (default: 2Gi)
+    limits:
+      memory: "2Gi"                     # Memory limit for controller (2 GB) (default: 2Gi)
+
+# Kafka broker configuration
+config:
+  kafka:
+    offsets.topic.replication.factor: 3                 # Replication factor for offsets topic (default: 3)
+    transaction.state.log.replication.factor: 3         # Replication factor for transaction log (default: 3)
+    transaction.state.log.min.isr: 2                    # Minimum in-sync replicas for transaction log (default: 2)
+    default.replication.factor: 3                       # Default replication factor (default: 3)
+    min.insync.replicas: 2                              # Minimum in-sync replicas (default: 2)
+    max.message.bytes: 52428800                         # Max message size in bytes (50 MB) (default: 52428800)
+    message.max.bytes: 52428800                         # Max message size in bytes (50 MB) (default: 52428800)
+    replica.fetch.max.bytes: 52428800                   # Max fetch size for replicas (50 MB) (default: 52428800)
+```
 
 #### BeeInstana
 

@@ -25,6 +25,30 @@ error() {
   exit 1
 }
 
+show_help() {
+  echo ""
+  echo "Instana Self-Hosted Custom Edition Setup"
+  echo ""
+  echo "Usage: ./shce.sh COMMAND [OPTIONS]"
+  echo ""
+  echo "Commands:"
+  echo "  apply                    Install everything"
+  echo "  delete                   Uninstall everything"
+  echo "  datastores apply [NAME]  Install datastores"
+  echo "  datastores delete [NAME] Uninstall datastores"
+  echo "  backend apply            Install backend only"
+  echo "  backend delete           Uninstall backend only"
+  echo "  help                     Show this help"
+  echo ""
+  echo "Examples:"
+  echo "  ./shce.sh apply"
+  echo "  ./shce.sh datastores apply kafka"
+  echo "  ./shce.sh backend apply"
+  echo "  ./shce.sh backend delete"
+  echo "  ./shce.sh delete"
+}
+
+
 helm_repo_add() {
   info "Adding helm repo..."
   helm repo add instana "$HELM_REPO_URL" --username "$HELM_REPO_USERNAME" --password "$HELM_REPO_PASSWORD" --force-update >/dev/null

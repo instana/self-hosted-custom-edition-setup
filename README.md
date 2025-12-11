@@ -762,6 +762,14 @@ For a complete list of feature flags, refer to the [Instana documentation](https
 
 After modifying the configuration files, you can install Instana using the following commands:
 
+### Getting Help
+
+```bash
+./shce.sh help
+```
+
+### Installation Commands
+
 ```bash
 # Install everything
 ./shce.sh apply
@@ -772,11 +780,18 @@ After modifying the configuration files, you can install Instana using the follo
 # Install a specific datastore
 ./shce.sh datastores apply kafka
 
-# Apply backend configurations
+# Install backend components only (operator, core, unit)
 ./shce.sh backend apply
+```
 
+### Uninstallation Commands
+
+```bash
 # Uninstall everything
 ./shce.sh delete
+
+# Uninstall backend components only (operator, core, unit)
+./shce.sh backend delete
 
 # Uninstall a specific datastore
 ./shce.sh datastores delete kafka

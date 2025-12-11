@@ -122,11 +122,6 @@ get_yaml_value() {
   echo "$value"
 }
 
-BASE_DOMAIN=$(get_yaml_value "core" ".baseDomain")
-AGENT_ACCEPTOR=$(get_yaml_value  "core" ".acceptors.agent.host")
-IS_GATEWAY_V2_ENABLED=$(get_yaml_value "core" ".gatewayConfig.enabled")
-INSTANA_ADMIN_USER=$(get_yaml_value "unit" ".initialAdminUser")
-
 create_instana_routes() {
   if [ "$CLUSTER_TYPE" != "ocp" ]; then
     return
@@ -331,9 +326,17 @@ welcome_to_instana() {
 }
 
 main() {
+
   local script_dir
   script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -P)
   pushd "$script_dir" >/dev/null 2>&1 || exit
+
+
+  BASE_DOMAIN=$(get_yaml_value "core" ".baseDomain")
+  AGENT_ACCEPTOR=$(get_yaml_value  "core" ".acceptors.agent.host")
+  IS_GATEWAY_V2_ENABLED=$(get_yaml_value "core" ".gatewayConfig.enabled")
+  INSTANA_ADMIN_USER=$(get_yaml_value "unit" ".initialAdminUser")
+
 
   # Source general scripts and configuration files
   source ./config.env
@@ -345,6 +348,7 @@ main() {
   local action=$1
   case $action in
   "apply")
+    precheck
     helm_repo_add
     install_cert_manager
     install_datastores
@@ -369,18 +373,24 @@ main() {
     local datastore=$3
     case $sub_action in
     "apply")
+      precheck
       helm_repo_add
       install_datastores "$datastore"
       ;;
     "delete")
       uninstall_datastores "$datastore"
       ;;
+    *)
+      warn "Invalid sub-action: $sub_action."
+      warn "Check for possible commands."
+      show_help
     esac
     ;;
   "backend")
     local sub_action=$2
     case $sub_action in
     "apply")
+      precheck
       helm_repo_add
       install_instana_operator
       install_instana_core
@@ -389,7 +399,25 @@ main() {
       create_instana_routes
       welcome_to_instana
       ;;
+    "delete")
+      delete_instana_routes
+      uninstall_instana_unit
+      uninstall_instana_core
+      uninstall_instana_operator
+      ;;
+    *)
+      warn "Invalid sub-action: $sub_action."
+      warn "Check for possible commands."
+      show_help
     esac
+    ;;
+  "-h"|"--help"|"help")
+    show_help
+    ;;
+  *)
+    warn "Invalid action: $action."
+    warn "Check for possible commands."
+    show_help
     ;;
   esac
 

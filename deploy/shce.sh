@@ -35,11 +35,17 @@ validate_config() {
   verify_yaml_key_or_host_port_non_empty "$yaml_file" "acceptors.agent" "agent acceptor"
 }
 
-precheck() {
+precheck_config_file(){
+
   if [ ! -f ./config.env ]; then
     error "Customer configuration file 'config.env' is not found."
+  else
+    source ./config.env
   fi
+}
 
+precheck() {
+  precheck_config_file
   validate_cluster_type
   validate_k8s_access
   validate_config
@@ -337,9 +343,7 @@ main() {
   IS_GATEWAY_V2_ENABLED=$(get_yaml_value "core" ".gatewayConfig.enabled")
   INSTANA_ADMIN_USER=$(get_yaml_value "unit" ".initialAdminUser")
 
-
-  # Source general scripts and configuration files
-  source ./config.env
+  # Source general scripts and
   source ./versions.sh
   source ./helper.sh
   source ./datastores.sh

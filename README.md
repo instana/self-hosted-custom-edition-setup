@@ -11,7 +11,6 @@ This repository contains scripts and configuration files to deploy Instana Self-
     - [Kubernetes Version](#kubernetes-version)
     - [Openshift](#ocp-cluster-and-version)
     - [yq](#install-yq)
-
 3. [Configuration Files Structure](#configuration-files-structure)
 4. [Modifying Default Values](#modifying-default-values)
    - [Environment Configuration](#environment-configuration)
@@ -34,6 +33,7 @@ This repository contains scripts and configuration files to deploy Instana Self-
    - [Gateway Configuration](#gateway-configuration)
 7. [Feature Flags](#feature-flags)
 8. [Installation Commands](#installation-commands)
+    - [Show Help](#getting-help)
 9. [Troubleshooting](#troubleshooting)
 
 ## Overview
@@ -126,7 +126,7 @@ Before installing Instana Self-Hosted Custom Edition, ensure you have the follow
   ```
 
   Check version:
-  
+
   ```bash
   yq --version
   ```
@@ -138,7 +138,7 @@ The configuration files are organized as follows:
 ```text
 self-hosted-custom-edition-setup/
 ├── deploy/
-│   ├── config.env                # Environment variables
+│   ├── config.env.template               # Environment variables template
 │   ├── shce.sh                   # Main installation script
 │   ├── helper.sh                 # Helper functions
 │   ├── datastores.sh             # Datastore installation functions
@@ -257,7 +257,7 @@ acceptors:
 
 # Image configuration
 imageConfig:
-  tag: 3.305.472-0  # Instana backend version
+  tag: 3.xxx.xxx-x  # Instana backend version
   # registry: artifact-public.instana.io
   # repository: backend
 
@@ -420,11 +420,11 @@ clickhouse:
     # Data storage
     dataStorageClassName: "your-storage-class"  # Storage class for data
     dataStorage: "500Gi"                        # Storage capacity for data (default: 500Gi)
-    
+
     # Log storage
     logStorageClassName: "your-storage-class"   # Storage class for logs
     logStorage: "50Gi"                          # Storage capacity for logs (default: 50Gi)
-    
+
     # Cold tier storage
     coldStorageClassName: "your-storage-class"  # Storage class for cold tier
     coldStorage: "100Gi"                        # Storage capacity for cold tier (default: 100Gi)
@@ -434,7 +434,7 @@ keeper:
   clusters:
     layout:
       replicasCount: 3                  # Number of Keeper replicas (default: 3)
-  
+
   # Resource configuration
   resources:
     requests:
@@ -442,7 +442,7 @@ keeper:
       memory: "2Gi"                     # Memory request (2 GB) (default: 2Gi)
     limits:
       memory: "2Gi"                     # Memory limit (2 GB) (default: 2Gi)
-  
+
   # Storage configuration
   volumeClaimTemplates:
     logStorageClassName: "your-storage-class"       # Storage class for logs
@@ -767,8 +767,6 @@ After modifying the configuration files, you can install Instana using the follo
 ```bash
 ./shce.sh help
 ```
-
-### Installation Commands
 
 ```bash
 # Install everything

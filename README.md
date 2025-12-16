@@ -692,7 +692,7 @@ For more advanced configurations, you can use subdomains with a single port:
 ```yaml
 acceptors:
   agent:
-    host: ingress.your-domain.example.com
+    host: agent-acceptor.your-domain.example.com
     port: 443
   otlp:
     http:

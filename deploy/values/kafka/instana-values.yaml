@@ -44,5 +44,5 @@ config:
     default.replication.factor: 3
     min.insync.replicas: 2
     max.message.bytes: 52428800
-    message.max.bytes: 52428800 
+    message.max.bytes: 52428800
     replica.fetch.max.bytes: 52428800

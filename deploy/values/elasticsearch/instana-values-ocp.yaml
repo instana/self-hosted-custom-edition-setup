@@ -8,9 +8,15 @@ nodeSets:
         - ingest
         - data
       node.store.allow_mmap: false
+    resources:
+      requests:
+        cpu: "2000m"
+        memory: "8Gi"
+      limits:
+        memory: "8Gi"
     securityContext: {}
     storageClassName: ""
     volume:
       resources:
         requests:
-          storage: "20Gi"
+          storage: 500Gi

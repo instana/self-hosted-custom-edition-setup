@@ -14,14 +14,14 @@ clickhouse:
     # Data storage
     dataStorageClassName: ""  # Storage class for data
     dataStorage: "500Gi"                        # Storage capacity for data
-    
+
     # Log storage
     logStorageClassName: ""   # Storage class for logs
-    logStorage: "50Gi"                           # Storage capacity for logs
-    
+    logStorage: "50Gi"        # Storage capacity for logs
+
     # Cold tier storage
     coldStorageClassName: ""  # Storage class for cold tier
-    coldStorage: "100Gi"   
+    coldStorage: "100Gi"      # Storage capacity for cold tier
 keeper:
   clusters:
     layout:

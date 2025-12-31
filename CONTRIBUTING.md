@@ -5,25 +5,17 @@ free to scratch it.
 
 To contribute code or documentation, please submit a [pull request](https://github.com/instana/self-hosted-custom-edition-setup/pulls).
 
-A good way to familiarize yourself with the codebase and contribution process is
-to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/instana/self-hosted-custom-edition-setup/issues).
-Before embarking on a more ambitious contribution, please quickly [get in touch](#communication) with us.
-
 **Note: We appreciate your effort, and want to avoid a situation where a contribution
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
 ## Proposing new features
 
-If you would like to implement a new feature, please [raise an issue](https://github.com/instana/self-hosted-custom-edition-setup/issues)
-before sending a pull request so the feature can be discussed. This is to avoid
-you wasting your valuable time working on a feature that the project developers
-are not interested in accepting into the code base.
+If you would like to implement a new feature, please raise a feature request in [AHA](https://automation-management.ideas.ibm.com/?project=INSTANA) before sending a pull request so the feature can be discussed. This is to avoid you wasting your valuable time working on a feature that the project developers are not interested in accepting into the code base.
 
 ## Fixing bugs
 
-If you would like to fix a bug, please [raise an issue](https://github.com/instana/self-hosted-custom-edition-setup/issues) before sending a
-pull request so it can be tracked.
+If you would like to fix a bug, please raise a ticket with [IBM Support](https://support.ibm.com) before sending a pull request so it can be tracked.
 
 ## Merge approval
 
@@ -68,10 +60,6 @@ local git repository using the following command:
 ```shell
 git commit -s
 ```
-
-## Communication
-
-Please feel free to connect with us on our [Slack channel](link).
 
 ## Setup
 

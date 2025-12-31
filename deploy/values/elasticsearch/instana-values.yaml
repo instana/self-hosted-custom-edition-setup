@@ -13,9 +13,9 @@ nodeSets:
     resources:
       requests:
         cpu: "2000m"
-        memory: "4Gi"
+        memory: "8Gi"
       limits:
-        memory: "4Gi"
+        memory: "8Gi"
     securityContext:
       fsGroup: 1000
       runAsGroup: 1000

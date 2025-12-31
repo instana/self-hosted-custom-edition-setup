@@ -203,7 +203,7 @@ install_instana_core() {
     CAPACITY="${AZURE_STORAGE_CAPACITY:-100Gi}"
 
     # Apply the PersistentVolume definition
-    sed "s/{{AZURE_STORAGE_FILESHARE_NAME}}/${AZURE_STORAGE_FILESHARE_NAME}/g; s/{{AZURE_STORAGE_CAPACITY}}/${CAPACITY}/g" ./values/core/pv_template_aks.yaml | kubectl apply -f -
+    sed "s/{{AZURE_STORAGE_FILESHARE_NAME}}/${AZURE_STORAGE_FILESHARE_NAME}/g; s/{{AZURE_STORAGE_CAPACITY}}/${CAPACITY}/g" ./values/core/pv-template-aks.yaml | kubectl apply -f -
   fi
 
   local file_args
@@ -245,9 +245,9 @@ install_instana_unit() {
     --set tenantName="${INSTANA_TENANT_NAME}" \
     --set unitName="${INSTANA_UNIT_NAME}"\
     --set licenses="{$license_content}" \
-    --set agentKeys="{$AGENT_KEY}" \
     --set-literal downloadKey="$DOWNLOAD_KEY" \
     --set-string cleanupJob.image.registry="${REGISTRY_URL}" \
+    ${AGENT_KEY:+--set agentKeys="{$AGENT_KEY}"} \
     "${file_args[@]}"
 
   check_instana_backend_ready "instana-units" "unit" "${INSTANA_UNIT_NAME}-${INSTANA_TENANT_NAME}"
@@ -344,6 +344,7 @@ main() {
   INSTANA_ADMIN_USER=$(get_yaml_value "unit" ".initialAdminUser")
 
   # Source general scripts and
+  source ./config.env
   source ./versions.sh
   source ./helper.sh
   source ./datastores.sh

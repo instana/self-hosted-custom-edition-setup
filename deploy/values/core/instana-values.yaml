@@ -5,7 +5,7 @@ baseDomain: ""
 acceptors:
   agent:
     host: ""
-    port: 443
+    port: 1443
   otlp:
     http: {}
     grpc: {}
@@ -53,7 +53,9 @@ imagePullSecrets:
 imagePullPolicy: IfNotPresent
 storageConfigs: {}
 resourceProfile: medium
-properties: []
+properties:
+  - name: config.url.format.pathStyle
+    value: "true"
 featureFlags:
   - name: feature.beeinstana.infra.metrics.enabled
     enabled: true

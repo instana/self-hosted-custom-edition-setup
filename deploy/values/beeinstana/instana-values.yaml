@@ -19,7 +19,6 @@ config:
     tag: v2.46.0
   cpu: 200m
   memory: 200Mi
-  limitMemory: true
   replicas: 1
 ingestor:
   image:

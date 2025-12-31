@@ -50,7 +50,7 @@ Before installing Instana Self-Hosted Custom Edition, ensure you have the follow
 | 2   | A default storage class is set | Required for successful data store installations   |
 | 3   | Kubernetes version > 1.25      | Instana requires Kubernetes version 1.25 or higher |
 | 4   | OCP version > 4.13             | Required to deploy Instana on OpenShift            |
-| 5   | yq                             | Required to parse yaml            |
+| 5   | yq                             | Required to parse yaml                             |
 
 - ### Helm
 
@@ -149,23 +149,17 @@ self-hosted-custom-edition-setup/
 │       ├── beeinstana-operator/
 │       │   └── instana-values.yaml
 │       ├── cassandra/
-│       │   ├── cassandra-scc.yaml
 │       │   └── instana-values.yaml
 │       ├── cassandra-operator/
 │       │   └── instana-values.yaml
 │       ├── cert-manager/
 │       │   └── instana-values.yaml
 │       ├── clickhouse/
-│       │   ├── clickhouse-scc.yaml
 │       │   ├── instana-values-eks.yaml
 │       │   └── instana-values.yaml
 │       ├── clickhouse-operator/
 │       │   └── instana-values.yaml
 │       ├── core/
-│       │   ├── instana-values-aks.yaml
-│       │   ├── instana-values-eks.yaml
-│       │   ├── instana-values-gke.yaml
-│       │   ├── instana-values-ocp.yaml
 │       │   ├── instana-values.yaml
 │       │   └── pv-template-aks.yaml
 │       ├── elasticsearch/
@@ -255,6 +249,11 @@ acceptors:
     host: "serverless.your-domain.example.com"
     port: 443
 
+# Support for single ingress domain
+properties:
+  - name: config.url.format.pathStyle
+    value: "true"
+
 # Image configuration
 imageConfig:
   tag: 3.xxx.xxx-x  # Instana backend version
@@ -292,6 +291,19 @@ gatewayConfig:
       # externalTrafficPolicy: Local  # Default
       # annotations:
       #   your-annotation-key: your-annotation-value
+
+# Autoscaling Configuration
+
+## Enable autoscaling
+autoscalingConfig:
+  # This will enable HPA of all Instana backend components
+  enabled: true
+
+## Configure Min/Max replicas of the Instana backend components
+autoscalingConfig:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
 
 # Feature flags
 featureFlags:
@@ -378,9 +390,9 @@ nodeSets:
     resources:
       requests:
         cpu: "2000m"                    # CPU request (2 cores) (default: 2000m)
-        memory: "4Gi"                   # Memory request (4 GB) (default: 4Gi)
+        memory: "8Gi"                   # Memory request (8 GB) (default: 8Gi)
       limits:
-        memory: "4Gi"                   # Memory limit (4 GB) (default: 4Gi)
+        memory: "8Gi"                   # Memory limit (8 GB) (default: 8Gi)
     securityContext:
       fsGroup: 1000
       runAsGroup: 1000
@@ -656,6 +668,8 @@ For Azure Kubernetes Service (AKS), you can configure Azure File storage as foll
 
 ## Network and DNS Configuration
 
+**NOTE**: By default, the script supports single ingress domain and is configurable with `custom_values.yaml`.
+
 ### Base Domain
 
 The base domain is the main domain for accessing the Instana UI. Configure it in `deploy/values/core/custom-values.yaml`:
@@ -717,7 +731,7 @@ Or use a single domain with different ports:
 ```yaml
 acceptors:
   agent:
-    port: 1444
+    port: 1443
   otlp:
     http:
       port: 4318
@@ -750,7 +764,7 @@ featureFlags:
 Common feature flags include:
 
 | Feature Flag | Description |
-|--------------|-------------|
+| -------------- | ------------- |
 | `feature.logging.enabled` | Enables logging |
 | `feature.synthetics.enabled` | Enables synthetic monitoring |
 | `feature.internal.monitoring.unit` | Enables internal monitoring |
@@ -804,5 +818,6 @@ If you encounter issues during installation, check the following:
 3. Check that the storage class exists and is properly configured.
 4. Verify that DNS records are properly configured for the base domain and agent acceptor.
 5. Check the logs of the pods in the respective namespaces for errors.
+6. Cleanup old persistent volume claims of datastores, if present.
 
 For more detailed troubleshooting, refer to the [Instana documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=backend-installing-custom-edition).

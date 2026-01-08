@@ -4,6 +4,18 @@ clickhouse:
   clusters:
     layout:
       replicasCount: 2
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: "clickhouse.altinity.com/app"
+                  operator: In
+                  values:
+                    - "chop"
+            topologyKey: "kubernetes.io/hostname"
   resources:
     requests:
       cpu: "10000m"
@@ -26,6 +38,15 @@ keeper:
   clusters:
     layout:
       replicasCount: 3
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app: clickhouse-keeper 
+            topologyKey: "kubernetes.io/hostname"
   resources:
     requests:
       cpu: "1000m"

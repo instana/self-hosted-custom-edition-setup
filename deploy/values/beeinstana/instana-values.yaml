@@ -5,6 +5,15 @@ imagePullSecretName: "instana-registry"
 aggregator:
   image:
     tag: v1.85.84-release
+  affinityOverrides:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                role: aggregator
+            topologyKey: "kubernetes.io/hostname"
   cpu: 4
   memory: 48Gi
   limitMemory: true

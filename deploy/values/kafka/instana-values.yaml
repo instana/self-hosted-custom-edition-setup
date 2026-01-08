@@ -16,6 +16,21 @@ template:
       kafka: 500Mi
       controller: 500Mi
       entityOperator: 500Mi
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              strimzi.io/pool-name: kafka
+          topologyKey: "kubernetes.io/hostname"
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              strimzi.io/pool-name: controller
+          topologyKey: "kubernetes.io/hostname"
 image:
   tag: "0.47.0-kafka-3.9.1_v0.28.0"
 imagePullSecrets:

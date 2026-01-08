@@ -149,12 +149,14 @@ self-hosted-custom-edition-setup/
 │       ├── beeinstana-operator/
 │       │   └── instana-values.yaml
 │       ├── cassandra/
+│       │ ├── cassandra-scc.yaml
 │       │   └── instana-values.yaml
 │       ├── cassandra-operator/
 │       │   └── instana-values.yaml
 │       ├── cert-manager/
 │       │   └── instana-values.yaml
 │       ├── clickhouse/
+│       │ ├── clickhouse-scc.yaml
 │       │   ├── instana-values-eks.yaml
 │       │   └── instana-values.yaml
 │       ├── clickhouse-operator/

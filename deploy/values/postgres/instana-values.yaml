@@ -7,6 +7,8 @@ resources:
     memory: 1Gi
   limits:
     memory: 1Gi
+affinity:
+  podAntiAffinityType: preferred
 storage:
   size: 50Gi
 image:

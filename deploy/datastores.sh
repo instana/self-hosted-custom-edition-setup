@@ -39,6 +39,10 @@ install_datastore_cassandra() {
   create_namespace_if_not_exist instana-cassandra
   install_instana_registry instana-cassandra
 
+  if [ "$CLUSTER_TYPE" == "ocp" ]; then
+    kubectl apply -f values/cassandra/cassandra-scc.yaml
+  fi
+
   helm_upgrade "cass-operator" "instana/cass-operator" "instana-cassandra" "${CASSANDRA_OPERATOR_CHART_VERSION}" \
     --set-string image.registry="${REGISTRY_URL}" \
     --set-string image.repository="self-hosted-images/3rd-party/operator/cass-operator" \
@@ -172,6 +176,10 @@ uninstall_cassandra() {
   helm_uninstall "cassandra" "instana-cassandra"
   helm_uninstall "cass-operator" "instana-cassandra"
   helm_uninstall "instana-registry" "instana-cassandra"
+  
+  if [ "$CLUSTER_TYPE" == "ocp" ]; then
+    kubectl delete scc cassandra-scc --ignore-not-found --wait=true
+  fi
 
   delete_namespace "instana-cassandra"
 }
@@ -180,7 +188,7 @@ uninstall_clickhouse() {
   helm_uninstall "clickhouse" "instana-clickhouse"
   helm_uninstall "clickhouse-operator" "instana-clickhouse"
   helm_uninstall "instana-registry" "instana-clickhouse"
-
+  
   delete_namespace "instana-clickhouse"
 }
 

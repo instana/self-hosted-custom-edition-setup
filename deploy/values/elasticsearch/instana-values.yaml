@@ -25,6 +25,15 @@ nodeSets:
       resources:
         requests:
           storage: 500Gi
+    podTemplate:
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    elasticsearch.k8s.elastic.co/cluster-name: instana
+                topologyKey: "kubernetes.io/hostname"
 image:
   tag: "8.18.6_v0.16.10"
 imagePullSecrets:

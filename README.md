@@ -149,6 +149,7 @@ self-hosted-custom-edition-setup/
 │       ├── beeinstana-operator/
 │       │   └── instana-values.yaml
 │       ├── cassandra/
+│       │   ├── cassandra-scc.yaml
 │       │   └── instana-values.yaml
 │       ├── cassandra-operator/
 │       │   └── instana-values.yaml

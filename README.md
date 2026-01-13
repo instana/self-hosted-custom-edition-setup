@@ -240,6 +240,9 @@ acceptors:
     grpc:
       host: "otlp-grpc.your-domain.example.com"
       port: 443
+  opamp:
+    host: opamp-acceptor.your-domain.example.com
+    port: 443
   eum:
     host: "eum.your-domain.example.com"
     port: 443
@@ -716,6 +719,9 @@ acceptors:
     grpc:
       host: otlp-grpc.your-domain.example.com
       port: 443
+  opamp:
+    host: opamp-acceptor.your-domain.example.com
+    port: 443
   eum:
     host: eum.your-domain.example.com
     port: 443
@@ -732,17 +738,26 @@ Or use a single domain with different ports:
 ```yaml
 acceptors:
   agent:
+    host: your-domain.example.com # basedomain
     port: 1443
   otlp:
     http:
+      host: your-domain.example.com # basedomain
       port: 4318
     grpc:
+      host: your-domain.example.com # basedomain
       port: 4317
+  opamp:
+    host: your-domain.example.com # basedomain
+    port: 1888
   eum:
+    host: your-domain.example.com # basedomain
     port: 1555
   synthetics:
+    host: your-domain.example.com # basedomain
     port: 1666
   serverless:
+    host: your-domain.example.com # basedomain
     port: 1777
 ```
 

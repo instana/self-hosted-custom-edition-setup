@@ -9,6 +9,7 @@ acceptors:
   otlp:
     http: {}
     grpc: {}
+  opamp: {}
   synthetics: {}
   serverless: {}
   eum: {}

@@ -10,6 +10,7 @@ nodeSets:
         - ingest
         - data
       node.store.allow_mmap: false
+      search.max_buckets: 300000
     resources:
       requests:
         cpu: "2000m"
